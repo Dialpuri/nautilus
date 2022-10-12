@@ -1,4 +1,4 @@
-# nautilus makefile
+# nautilus makefile - Jordan Dialpuri Edit 12/10/22
 
 SHARED = \
 nautilus-join \
@@ -39,18 +39,23 @@ CFLAGS = ${FLAGS} ${INCDIR} -c
 LFLAGS = ${FLAGS} ${LIBDIR} ${LIBS}
 
 SRC_DIR = src
+BIN_DIR = bin
+
 OBJS = $(SHARED:=.o)
 
-TARGET_OBJS = $(addprefix ${SRC_DIR}/,${OBJS})
+TARGET_OBJS = $(addprefix ${BIN_DIR}/,${OBJS})
+TARGET_SRC = $(addprefix ${SRC_DIR}/,${OBJS})
 
-cnautilus: ${TARGET_OBJS} ${SRC_DIR}/cnautilus.o
-	g++ ${TARGET_OBJS}  ${SRC_DIR}/cnautilus.o -o $@ ${LFLAGS}
+$(info $(TARGET_OBJS))
 
-cnautilus.o: cnautilus.cpp
-	g++ ${CFLAGS} $<
+cnautilus: ${TARGET_SRC} ${BIN_DIR}/cnautilus.o
+	g++ ${TARGET_OBJS} ${BIN_DIR}/cnautilus.o -o $@ ${LFLAGS}
+
+${BIN_DIR}/cnautilus.o: ${SRC_DIR}/cnautilus.cpp
+	g++ ${CFLAGS} $< -o $@
 
 %.o: %.cpp %.h
-	g++ ${CFLAGS} $<
+	g++ ${CFLAGS} $< -o ${BIN_DIR}/$(@F)
 
 clean:
-	rm *.o cnautilus
+	rm src/*.o cnautilus
