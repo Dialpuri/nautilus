@@ -46,16 +46,21 @@ OBJS = $(SHARED:=.o)
 TARGET_OBJS = $(addprefix ${BIN_DIR}/,${OBJS})
 TARGET_SRC = $(addprefix ${SRC_DIR}/,${OBJS})
 
-$(info $(TARGET_OBJS))
+BUILD_PRINT = @echo "\e[1;34mBuilding $<\e[0m"
+COMPLETE_PRINT = @echo "\e[1;32mBuilding complete!\e[0m"
 
-cnautilus: ${TARGET_SRC} ${BIN_DIR}/cnautilus.o
-	g++ ${TARGET_OBJS} ${BIN_DIR}/cnautilus.o -o $@ ${LFLAGS}
+cnautilus: ${TARGET_SRC} cnautilus.o
+	$(BUILD_PRINT)
+	@g++ ${TARGET_OBJS} ${BIN_DIR}/cnautilus.o -o $@ ${LFLAGS}
+	$(COMPLETE_PRINT)
 
-${BIN_DIR}/cnautilus.o: ${SRC_DIR}/cnautilus.cpp
-	g++ ${CFLAGS} $< -o $@
+cnautilus.o: ${SRC_DIR}/cnautilus.cpp
+	$(BUILD_PRINT)
+	@g++ ${CFLAGS} $< -o ${BIN_DIR}/$(@F)
 
 %.o: %.cpp %.h
-	g++ ${CFLAGS} $< -o ${BIN_DIR}/$(@F)
+	$(BUILD_PRINT)
+	@g++ ${CFLAGS} $< -o ${BIN_DIR}/$(@F)
 
 clean:
-	rm src/*.o cnautilus
+	rm bin/*.o cnautilus
