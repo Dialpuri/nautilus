@@ -50,6 +50,10 @@ TARGET_SRC = $(addprefix ${SRC_DIR}/,${OBJS})
 BUILD_PRINT = @echo "\e[1;34mBuilding $<\e[0m"
 COMPLETE_PRINT = @echo "\e[1;32mBuilding complete!\e[0m"
 
+MKDIR_P = mkdir -p
+
+$(shell mkdir -p $(BIN_DIR))
+
 cnautilus: ${TARGET_SRC} cnautilus.o
 	$(BUILD_PRINT)
 	@g++ ${TARGET_OBJS} ${BIN_DIR}/cnautilus.o -o $@ ${LFLAGS}

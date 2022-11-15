@@ -5,7 +5,6 @@ cnautilus
 
 #DATA FILES
 data/*
-
 #ENVIRONMENT FILES
 py/*
 .vscode
@@ -17,3 +16,6 @@ scripts/*
 
 #OUTPUT FILES
 *.json
+
+./cnautilus
+cnautilus
