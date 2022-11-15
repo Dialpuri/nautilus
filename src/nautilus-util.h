@@ -11,6 +11,7 @@
 class NautilusUtil {
  public:
   static void set_reference( clipper::String& pdb );
+  static std::vector<std::string> read_pdb_input_file(std::string& pdb);
 };
 
 

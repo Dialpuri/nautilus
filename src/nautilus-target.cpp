@@ -156,6 +156,7 @@ NucleicAcidTargets::NucleicAcidTargets()
 
 void NucleicAcidTargets::add_pdb( const clipper::String& file )
 {
+  std::cout << "Adding pdb file" << file << std::endl;
   nadb.add_pdb( file );
 
   // initialise representative coordinate

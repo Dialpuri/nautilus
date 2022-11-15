@@ -6,7 +6,7 @@
 #include <clipper/clipper-contrib.h>
 #include <clipper/clipper-minimol.h>
 #include <algorithm>
-
+#include <fstream>
 #include "nucleicacid_db.h"
 #include "nautilus-tools.h"
 #include "nautilus-ss-find.h"
@@ -16,6 +16,7 @@
 #include "nautilus-rebuild-bases.h"
 #include "nautilus-tidy.h"
 #include "nautilus-util.h"
+#include <stdexcept>
 
 
 int main( int argc, char** argv )
@@ -39,6 +40,8 @@ int main( int argc, char** argv )
   clipper::String ipcol_fr = "NONE";
   clipper::String ipseq = "NONE";
   clipper::String ippdb = "NONE";
+  clipper::String ippdb_list = "NONE";
+  clipper::String ippdb_list_dir = "NONE";
   clipper::String ippdb_ref = "NONE";
   clipper::String ippdb_pho = "NONE";
   clipper::String oppdb = "nautilus.pdb";
@@ -69,6 +72,10 @@ int main( int argc, char** argv )
       if ( ++arg < args.size() ) ipseq = args[arg];
     } else if ( args[arg] == "-pdbin" ) {
       if ( ++arg < args.size() ) ippdb = args[arg];
+    } else if ( args[arg] == "-pdblistin" ) {
+    if ( ++arg < args.size() ) ippdb_list = args[arg];
+    } else if ( args[arg] == "-pdblistdir" ) {
+    if ( ++arg < args.size() ) ippdb_list_dir = args[arg];
     } else if ( args[arg] == "-pdbout" ) {
       if ( ++arg < args.size() ) oppdb = args[arg];
     } else if ( args[arg] == "-mapout" ) {
@@ -168,9 +175,52 @@ int main( int argc, char** argv )
   for ( HRI ih = hkls.first(); !ih.last(); ih.next() ) if ( flag[ih].flag() == 0 ) wrk_f1[ih] = clipper::data32::F_sigF();  //ugly hack for broken SGI compilers
 
   // Get reference model
-  if ( ippdb_ref == "NONE" ) NautilusUtil::set_reference( ippdb_ref );
   NucleicAcidTargets natools;
-  natools.add_pdb( ippdb_ref );
+  if ( ippdb_ref == "NONE" ) {
+    if (ippdb_list == "NONE") { 
+      NautilusUtil::set_reference( ippdb_ref );
+      natools.add_pdb( ippdb_ref );
+    }
+    else { 
+      std::vector<std::string> pdb_list = NautilusUtil::read_pdb_input_file(ippdb_list); 
+
+      if (ippdb_list_dir == "NONE") { 
+        throw std::invalid_argument("You must specify a directory containing the pdb files in the pdb input list.");
+      }
+      std::string pdb_dir = ippdb_list_dir;
+
+      for(auto pdb: pdb_list){ 
+        std::string pdb_path = pdb_dir + pdb + ".pdb"; 
+        std::ifstream file;
+
+        file.open( pdb_path, std::ifstream::in );
+        file.close();
+        
+        if ( !file.fail() ) { 
+          natools.add_pdb(pdb_path);
+        }
+        else { 
+          std::cout << "Could not find " << pdb_path << std::endl;
+          std::cout << "Attempting to get it!" << std::endl;
+
+          std::string local_pdb_dir = "./data/pdb_files/";
+          std::string local_pdb_path = local_pdb_dir + pdb + ".pdb";
+          std::string url = "https://files.rcsb.org/download/" + pdb + ".pdb";
+          std::string wget_command = "wget " + url + " -P " + local_pdb_dir;
+          std::ifstream local_file;
+
+          local_file.open( local_pdb_path, std::ifstream::in );
+          if (local_file.fail() ) { 
+            system(wget_command.c_str());
+          }
+          natools.add_pdb(local_pdb_path);
+          
+        }
+      }
+    }
+  }
+
+
   NucleicAcidTools tools;
 
   // Get sequence
