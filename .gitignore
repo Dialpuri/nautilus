@@ -1,3 +1,19 @@
+#BUILD OBJECTS
 bin/*
-data/*
 ./cnautilus
+cnautilus
+
+#DATA FILES
+data/*
+
+#ENVIRONMENT FILES
+py/*
+.vscode
+*.env
+
+#SCRIPTS
+scripts/*
+*.sh
+
+#OUTPUT FILES
+*.json

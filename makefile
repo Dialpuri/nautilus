@@ -32,6 +32,7 @@ FLAGS = \
 -fPIC \
 -ftemplate-depth-50 \
 -D_GLIBCXX_USE_CXX11_ABI=0 \
+-g
 
 INCDIR = -I${CCP4}/include
 LIBDIR = -L${CCP4}/lib

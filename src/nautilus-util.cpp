@@ -4,6 +4,8 @@
 #include "nautilus-util.h"
 
 #include <fstream>
+#include <sstream>
+
 extern "C" {
 #include <stdlib.h>
 }
@@ -44,6 +46,35 @@ void NautilusUtil::set_reference( clipper::String& pdb )
     clipper::Message::message( clipper::Message_fatal( "No reference data specified and $CLIBD not found" ) );
   }
 }
+
+std::vector<std::string> NautilusUtil::read_pdb_input_file( std::string& path) { 
+  std::vector<std::string> pdb_ids; 
+
+  std::fstream file_stream; 
+
+  file_stream.open(path, std::ios::in);
+  std::string line, word; 
+  std::vector<std::string> row;
+  std::vector<std::vector<std::string>> file_content;
+
+  if (file_stream.is_open()) { 
+    while(std::getline(file_stream, line)) {
+      std::stringstream str(line);
+
+      while(std::getline(str, word, ',')) { 
+        row.push_back(word); 
+        file_content.push_back(row);
+      }
+    }
+  }
+  else {
+    std::cout << "Could not open " << path << "!" << std::endl;
+  }
+
+  return row;
+}
+
+
 
 
 #ifdef NAUTILUS_PROFILE
