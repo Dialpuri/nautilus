@@ -4,7 +4,7 @@
 
 #include "nucleicacid_db.h"
 #include <fstream>
-
+#include <iomanip> 
 
 namespace NucleicAcidDB {
 
@@ -325,6 +325,54 @@ void NucleicAcid::set_flag()
   }
 }
 
+  // float p_x, p_y, p_z;  // main chain
+  // float o5x, o5y, o5z;
+  // float c5x, c5y, c5z;
+  // float c4x, c4y, c4z;
+  // float o4x, o4y, o4z;
+  // float c3x, c3y, c3z;
+  // float o3x, o3y, o3z;
+  // float c2x, c2y, c2z;
+  // float c1x, c1y, c1z;
+  // float n_x, n_y, n_z;  
+  // ATOM     29  P     G A   2      25.756 -11.816  27.330  1.00 54.85           P  
+
+
+
+
+void NucleicAcid::dump_monomer_to_pdb(std::string name) { 
+
+    // std::cout << "P_X " << p_x << " P_Y " << p_y << " P_Z" << p_z << std::endl;
+    // std::cout << "O5_X " << o5x << " O5_Y " << o5y << " O5_Z" << o5z << std::endl;
+    // std::cout << "C5_X " << c5x << " C5_Y " << c5y << " C5_Z" << c5z << std::endl;
+    // std::cout << "C4_X " << c4x << " C4_Y " << c4y << " C4_Z" << c4z << std::endl;
+    // std::cout << "O4_X " << o4x << " O4_Y " << o4y << " O4_Z" << o4z << std::endl;
+    // std::cout << "C3_X " << c3x << " C3_Y " << c3y << " C3_Z" << c3z << std::endl;
+    // std::cout << "O3_X " << o3x << " O3_Y " << o3y << " O3_Z" << o3z << std::endl;
+    // std::cout << "C2_X " << c2x << " C2_Y " << c2y << " C2_Z" << c2z << std::endl;
+    // std::cout << "C1_X " << c1x << " C1_Y " << c1y << " C1_Z" << c1z << std::endl;
+    // std::cout << "N_X " << n_x << " N_Y " << n_y << " N_Z" << n_z << std::endl;
+  
+    std::cout << "Dumping " << name << " to pdb file" << std::endl;
+    std::string file_path = "./debug/monomer/" + name + ".pdb";
+    std::ofstream file(file_path);
+
+    file << std::fixed << std::setprecision(3);
+
+    file << "ATOM      1  P     A A   1      " + to_string_with_precision(p_x) + " " + to_string_with_precision(p_y) + " " + to_string_with_precision(p_z) + "  1.00 10.00           P\n";
+    file << "ATOM      2  O5    A A   1      " + to_string_with_precision(o5x) + " " + to_string_with_precision(o5y) + " " + to_string_with_precision(o5z) + "  1.00 10.00           O\n";
+    file << "ATOM      3  C5    A A   1      " + to_string_with_precision(c5x) + " " + to_string_with_precision(c5y) + " " + to_string_with_precision(c5z) + "  1.00 10.00           C\n";
+    file << "ATOM      4  C4    A A   1      " + to_string_with_precision(c4x) + " " + to_string_with_precision(c4y) + " " + to_string_with_precision(c4z) + "  1.00 10.00           C\n";
+    file << "ATOM      5  O4    A A   1      " + to_string_with_precision(o4x) + " " + to_string_with_precision(o4y) + " " + to_string_with_precision(o4z) + "  1.00 10.00           O\n";
+    file << "ATOM      6  C3    A A   1      " + to_string_with_precision(c3x) + " " + to_string_with_precision(c3y) + " " + to_string_with_precision(c3z) + "  1.00 10.00           C\n";
+    file << "ATOM      7  O3    A A   1      " + to_string_with_precision(o3x) + " " + to_string_with_precision(o3y) + " " + to_string_with_precision(o3z) + "  1.00 10.00           O\n";
+    file << "ATOM      8  C2    A A   1      " + to_string_with_precision(c2x) + " " + to_string_with_precision(c2y) + " " + to_string_with_precision(c2z) + "  1.00 10.00           C\n";
+    file << "ATOM      9  C1    A A   1      " + to_string_with_precision(c1x) + " " + to_string_with_precision(c1y) + " " + to_string_with_precision(c1z) + "  1.00 10.00           C\n";
+    file << "ATOM     10  N     A A   1      " + to_string_with_precision(n_x) + " " + to_string_with_precision(n_y) + " " + to_string_with_precision(n_z) + "  1.00 10.00           N\n";
+
+    file.close();
+    
+}
 
 // Chain classes
 

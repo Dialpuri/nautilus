@@ -175,6 +175,7 @@ void NucleicAcidTargets::add_pdb( const clipper::String& file )
       const clipper::RTop_orth rtop( vf, target_s.standard() );
       na.transform( rtop );
       nas.add_monomer( na );
+      // na.dump_monomer_to_pdb(std::to_string(r));
     }
   }
   for ( int r = 0; r < nas.size(); r++ ) {
@@ -572,7 +573,7 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
     mol_new.insert( mpmax );
   }
   //std::cout << mol_new.size() << std::endl;
-
+  
   return mol_new;
 }
 

@@ -52,6 +52,24 @@ class NucleicAcid {
   bool is_null() const { return flg == char(NONE); }  //!< test for null
 
   void set_flag();  //!< set flag on the basis of atoms present
+
+  void dump_monomer_to_pdb(std::string name);
+
+  template <typename T>
+  std::string to_string_with_precision(const T a_value, const int n = 4)
+  {
+      std::ostringstream out;
+      out.precision(n);
+      out << std::fixed << a_value;
+      std::string out_str(6, '\0');
+
+      for (int i = 0; i < out.str().size(); i++) {
+        out_str[i] += out.str()[i];
+      }
+      return out_str;
+  }
+
+
  private:
   static void unpack_float( const char* d, float& f ) { const short s = ((short(d[0])<<8)&0xFF00) | ((short(d[1]))&0x00FF); f = float(s)/100.0; }
   static void pack_float( char* d, const float& f ) { const short s = rint(100.0*f); d[0] = char((s>>8)&0x00FF); d[1] = char((s)&0x00FF); }
