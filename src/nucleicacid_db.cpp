@@ -340,7 +340,7 @@ void NucleicAcid::set_flag()
 
 
 
-void NucleicAcid::dump_monomer_to_pdb(std::string name) { 
+void NucleicAcid::dump_monomer_to_pdb(std::string name, std::string path) { 
 
     // std::cout << "P_X " << p_x << " P_Y " << p_y << " P_Z" << p_z << std::endl;
     // std::cout << "O5_X " << o5x << " O5_Y " << o5y << " O5_Z" << o5z << std::endl;
@@ -354,7 +354,7 @@ void NucleicAcid::dump_monomer_to_pdb(std::string name) {
     // std::cout << "N_X " << n_x << " N_Y " << n_y << " N_Z" << n_z << std::endl;
   
     std::cout << "Dumping " << name << " to pdb file" << std::endl;
-    std::string file_path = "./debug/monomer/" + name + ".pdb";
+    std::string file_path = path + "/" + name + ".pdb";
     std::ofstream file(file_path);
 
     file << std::fixed << std::setprecision(3);

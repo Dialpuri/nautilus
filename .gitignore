@@ -19,3 +19,6 @@ scripts/*
 
 ./cnautilus
 cnautilus
+
+#DEBUG FILES
+debug/*

@@ -163,6 +163,7 @@ void NucleicAcidTargets::add_pdb( const clipper::String& file )
   clipper::Coord_orth cc2(0.0,0.0,0.0), co3(0.0,0.0,0.0),
     co5(0.0,0.0,0.0), cc5(0.0,0.0,0.0), cp (0.0,0.0,0.0);
   NucleicAcidDB::Chain nas;
+  // std::cout << "The size of the nadb is " << nadb.size() << std::endl;
   for ( int r = 0; r < nadb.size(); r++ ) {
     NucleicAcidDB::NucleicAcid na = nadb[r];
     if ( !na.coord_c2().is_null() && !na.coord_o3().is_null() &&
@@ -442,7 +443,10 @@ const clipper::MiniMol NucleicAcidTargets::phosphate( const clipper::Xmap<float>
 
 
 const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xmap, const clipper::MiniMol& mol, int nsugar, int nphosp, double step )
-{
+{ 
+
+  // narepr.dump_monomer_to_pdb("narepr", "./debug/narepr");
+
   clipper::MiniMol mol_new = mol;
 
   // make a list of rotations
@@ -568,6 +572,8 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
           smax = score;
           mpmax = mpx;
         }
+      } else { 
+        // std::cout << "The fragment " << j << " - " << filenames[j] << " is not continous so will not be used" << std::endl;
       }
     }
     mol_new.insert( mpmax );

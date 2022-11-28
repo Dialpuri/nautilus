@@ -53,7 +53,7 @@ class NucleicAcid {
 
   void set_flag();  //!< set flag on the basis of atoms present
 
-  void dump_monomer_to_pdb(std::string name);
+  void dump_monomer_to_pdb(std::string name, std::string path);
 
   template <typename T>
   std::string to_string_with_precision(const T a_value, const int n = 4)
