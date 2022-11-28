@@ -52,7 +52,13 @@ COMPLETE_PRINT = @echo "\e[1;32mBuilding complete!\e[0m"
 
 MKDIR_P = mkdir -p
 
+#Source CCP4
+IGNORE := $(shell bash -c "source /opt/xtal/ccp4-8.0/bin/ccp4.setup-sh; env | sed 's/=/:=/' | sed 's/^/export /' > makeenv")
+include makeenv
+
 $(shell mkdir -p $(BIN_DIR))
+
+all: cnautilus
 
 cnautilus: ${TARGET_SRC} cnautilus.o
 	$(BUILD_PRINT)
