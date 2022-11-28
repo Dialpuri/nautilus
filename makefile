@@ -75,3 +75,4 @@ cnautilus.o: ${SRC_DIR}/cnautilus.cpp
 
 clean:
 	rm bin/*.o cnautilus
+	rm makeenv
