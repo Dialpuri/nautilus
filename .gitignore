@@ -5,13 +5,15 @@ cnautilus
 
 #DATA FILES
 data/*
+
 #ENVIRONMENT FILES
 py/*
 .vscode
 *.env
+venv/*
 
 #SCRIPTS
-scripts/*
+#scripts/*
 *.sh
 
 #OUTPUT FILES
