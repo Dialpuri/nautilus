@@ -442,6 +442,32 @@ const clipper::MiniMol NucleicAcidTargets::phosphate( const clipper::Xmap<float>
 }
 
 
+class Util {
+public:
+    static void print_coords(clipper::Coord_orth coordinate) {
+        std::cout << "[COORDS] : x " << coordinate.x() << " y " << coordinate.y() << " z " << coordinate.z() << std::endl;
+    }
+
+    static float get_fragment_density(NucleicAcidDB::NucleicAcid fragment, const clipper::Xmap<float>& xmap) {
+        typedef clipper::Interp_cubic I;
+
+        const clipper::Cell& cell = xmap.cell();
+
+        float rho = 0.0;
+        rho += xmap.interp<I>( fragment.coord_p().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_o5().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_c5().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_c4().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_o4().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_c3().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_o3().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_c2().coord_frac(cell) );
+        rho += xmap.interp<I>( fragment.coord_c1().coord_frac(cell) );
+
+        return rho;
+    }
+};
+
 const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xmap, const clipper::MiniMol& mol, int nsugar, int nphosp, double step )
 { 
 
@@ -553,6 +579,10 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
     v1[2] = rtop * target_p.standard()[2]; // O5'
     float smax = -1.0e20;
     clipper::MPolymer mpmax;
+
+    std::vector<int> high_scoring_indexes;
+
+    //  Search the nucleic acid database for a fragment which is the best fit.
     for ( int j = 0; j < nadb.size()-1; j++ ) {
       NucleicAcidDB::Chain frag = nadb.extract( j, 2 );
       if ( frag.is_continuous() ) {
@@ -564,6 +594,7 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
         float score = ( score_sugar( xmap, frag[0] ) +
                         score_sugar( xmap, frag[1] ) );
         if ( score > smax ) {
+            // Here is where the new score should go, if the score improves then we should run the more intense scoring algorithm
           clipper::MPolymer mpx;
           frag[0].set_type( '?' );
           frag[1].set_type( '?' );
@@ -571,12 +602,44 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
           mpx.insert( frag[1].mmonomer() );
           smax = score;
           mpmax = mpx;
+          high_scoring_indexes.push_back(j);
         }
-      } else { 
-        // std::cout << "The fragment " << j << " - " << filenames[j] << " is not continous so will not be used" << std::endl;
       }
     }
-    mol_new.insert( mpmax );
+
+//    std::cout << "The length of the high_scoring_indexes is " << high_scoring_indexes.size() << '\n';
+
+    float best_fragment_rho = 0.0;
+    NucleicAcidDB::Chain best_chain;
+
+    for (int index: high_scoring_indexes) {
+        // Score with more complex function!
+        // Append most probable to the mol_new
+        NucleicAcidDB::Chain current_fragment = nadb.extract(index, 2);
+
+        float total_fragment_rho = 0.0;
+
+        for (int k = 0; k < current_fragment.size(); k++) {
+            NucleicAcidDB::NucleicAcid fragment = current_fragment[k];
+            float rho = Util::get_fragment_density(fragment, xmap);
+            total_fragment_rho = total_fragment_rho + rho;
+        }
+
+        if (total_fragment_rho > best_fragment_rho) {
+            best_fragment_rho = total_fragment_rho;
+            best_chain = current_fragment;
+        }
+    }
+
+    clipper::MPolymer best_mpx;
+
+      best_chain[0].set_type( '?' );
+      best_chain[1].set_type( '?' );
+      best_mpx.insert( best_chain[0].mmonomer() );
+      best_mpx.insert( best_chain[1].mmonomer() );
+
+
+    mol_new.insert( best_mpx );
   }
   //std::cout << mol_new.size() << std::endl;
   
@@ -607,7 +670,6 @@ const clipper::MiniMol NucleicAcidTargets::grow( const clipper::Xmap<float>& xma
   }
   return mol_new;
 }
-
 
 const clipper::MiniMol NucleicAcidTargets::link( const clipper::Xmap<float>& xmap, const clipper::MiniMol& mol ) const
 {
