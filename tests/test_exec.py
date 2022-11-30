@@ -10,7 +10,7 @@ import multiprocessing
 @dataclass
 class Parameters:
     data_dir: str = './tests/test_files/'
-    test_list_dir: str = './tests/test_data/'
+    test_list_dir: str = './data/test_structures/data'
     number_of_cycles: str = "3"
     library_list_path: str = './tests/test_files/rebuilt_filenames.txt'
     library_dir_path: str = './tests/test_library/'
@@ -35,7 +35,7 @@ def run_nautilus(test_pdb):
 # -colin-free FREE \
 
     os.system(library_export)
-    subprocess.run(nautilus_cmd, shell=True)
+    subprocess.run(nautilus_cmd, shell=True, stdout=subprocess.DEVNULL)
 
 
 def run_completeness_script(test_pdb):
@@ -73,12 +73,12 @@ def worker(test_pdb):
 def main():
     test_list = get_test_files()
 
-    # with multiprocessing.Pool() as pool:
-    #     x = list(tqdm(pool.imap_unordered(worker, test_list), total=len(test_list)))
+    with multiprocessing.Pool() as pool:
+        x = list(tqdm(pool.imap_unordered(worker, test_list), total=len(test_list)))
 
-    for test_pdb in tqdm(test_list):
-        run_nautilus(test_pdb)
-        run_completeness_script(test_pdb)
+    # for test_pdb in tqdm(test_list):
+    #     run_nautilus(test_pdb)
+    #     run_completeness_script(test_pdb)
         # quit()
 
 def generate_test_dir_structure():

@@ -6,6 +6,7 @@
 #include "nautilus-tools.h"
 #include "nautilus-join.h"
 #include "nautilus-ss-find.h"
+#include <typeinfo>
 
 #include <algorithm>
 
@@ -156,7 +157,7 @@ NucleicAcidTargets::NucleicAcidTargets()
 
 void NucleicAcidTargets::add_pdb( const clipper::String& file )
 {
-  std::cout << "Adding pdb file" << file << std::endl;
+  // std::cout << "Adding pdb file" << file << std::endl;
   nadb.add_pdb( file );
 
   // initialise representative coordinate
@@ -466,6 +467,15 @@ public:
 
         return rho;
     }
+
+    static float get_fragment_score(NucleicAcidDB::Chain current_fragment, const clipper::Xmap<float>& xmap) {
+        float score = 0.0;
+
+        score = score + get_fragment_density(current_fragment[0], xmap);
+        score = score + get_fragment_density(current_fragment[1], xmap);
+
+        return score;
+    }
 };
 
 const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xmap, const clipper::MiniMol& mol, int nsugar, int nphosp, double step )
@@ -539,10 +549,6 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
     std::vector<clipper::MAtomIndexSymmetry> atoms = nb( trn, 4.0 );
     if ( atoms.size() == 0 ) filter_p.push_back( found_p[i] );
   }
-  //std::cout << "Filter: " << mol.atom_list().size() << std::endl;
-  //std::cout << found_s.size() << " " << filter_s.size() << std::endl;
-  //std::cout << found_p.size() << " " << filter_p.size() << std::endl;
-  //std::cout << mol_new.size() << std::endl;
 
   // build mono-units on sugars from db fragments
   for ( int i = 0; i < std::min(int(filter_s.size()),nsugar); i++ ) {
@@ -565,7 +571,6 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
     mp.insert( na.mmonomer() );
     mol_new.insert( mp );
   }
-  //std::cout << mol_new.size() << std::endl;
 
   // build bi-units on phosphates from db fragments
   for ( int i = 0; i < std::min(int(filter_p.size()),nphosp); i++ ) {
@@ -585,6 +590,7 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
     //  Search the nucleic acid database for a fragment which is the best fit.
     for ( int j = 0; j < nadb.size()-1; j++ ) {
       NucleicAcidDB::Chain frag = nadb.extract( j, 2 );
+
       if ( frag.is_continuous() ) {
         v2[0] = frag[0].coord_o3();
         v2[1] = frag[1].coord_p();
@@ -595,54 +601,35 @@ const clipper::MiniMol NucleicAcidTargets::find( const clipper::Xmap<float>& xma
                         score_sugar( xmap, frag[1] ) );
         if ( score > smax ) {
             // Here is where the new score should go, if the score improves then we should run the more intense scoring algorithm
-          clipper::MPolymer mpx;
-          frag[0].set_type( '?' );
-          frag[1].set_type( '?' );
-          mpx.insert( frag[0].mmonomer() );
-          mpx.insert( frag[1].mmonomer() );
           smax = score;
-          mpmax = mpx;
           high_scoring_indexes.push_back(j);
         }
       }
     }
 
-//    std::cout << "The length of the high_scoring_indexes is " << high_scoring_indexes.size() << '\n';
-
-    float best_fragment_rho = 0.0;
-    NucleicAcidDB::Chain best_chain;
+    float best_fragment_rho = -1.0e20;
 
     for (int index: high_scoring_indexes) {
         // Score with more complex function!
         // Append most probable to the mol_new
         NucleicAcidDB::Chain current_fragment = nadb.extract(index, 2);
 
-        float total_fragment_rho = 0.0;
+        float rho_score = Util::get_fragment_score(current_fragment, xmap) ;
 
-        for (int k = 0; k < current_fragment.size(); k++) {
-            NucleicAcidDB::NucleicAcid fragment = current_fragment[k];
-            float rho = Util::get_fragment_density(fragment, xmap);
-            total_fragment_rho = total_fragment_rho + rho;
-        }
-
-        if (total_fragment_rho > best_fragment_rho) {
-            best_fragment_rho = total_fragment_rho;
-            best_chain = current_fragment;
+        if (rho_score > best_fragment_rho) {
+            best_fragment_rho = rho_score;
+            clipper::MPolymer mpx;
+            current_fragment[0].set_type( '?' );
+            current_fragment[1].set_type( '?' );
+            mpx.insert( current_fragment[0].mmonomer() );
+            mpx.insert( current_fragment[1].mmonomer() );
+            mpmax = mpx;
         }
     }
 
-    clipper::MPolymer best_mpx;
-
-      best_chain[0].set_type( '?' );
-      best_chain[1].set_type( '?' );
-      best_mpx.insert( best_chain[0].mmonomer() );
-      best_mpx.insert( best_chain[1].mmonomer() );
-
-
-    mol_new.insert( best_mpx );
-  }
-  //std::cout << mol_new.size() << std::endl;
-  
+    // std::cout << "Best MPX is being inserted with best rho " << best_fragment_rho <<  std::endl;
+    mol_new.insert( mpmax );
+  }  
   return mol_new;
 }
 
