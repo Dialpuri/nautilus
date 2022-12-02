@@ -8,6 +8,8 @@
 
 #include <clipper/clipper.h>
 #include <clipper/clipper-minimol.h>
+#include <clipper/clipper-minimol.h>
+#include <clipper/clipper-ccp4.h>
 
 
 namespace NucleicAcidDB {
@@ -54,6 +56,8 @@ class NucleicAcid {
   void set_flag();  //!< set flag on the basis of atoms present
 
   void dump_monomer_to_pdb(std::string name, std::string path);
+  std::vector<float> get_bounding_box();
+  clipper::Atom_list return_atom_list();
 
   template <typename T>
   std::string to_string_with_precision(const T a_value, const int n = 4)
@@ -126,6 +130,7 @@ class Chain {
   //! Get rmsd versus other fragment
   double rmsd( const Chain& other, const std::vector<double>& wgts ) const;  
   */
+
   //! Get monomer by position in list
   const NucleicAcid& operator[] ( const int& i ) const { return dbmonomers[i]; }
   //! Set monomer by position in list
@@ -134,6 +139,7 @@ class Chain {
   int size() const { return dbmonomers.size(); }
   // output some debug info
   void debug() const;
+
  protected:
   std::vector<NucleicAcid> dbmonomers;
 };

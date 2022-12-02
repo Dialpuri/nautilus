@@ -3,11 +3,11 @@
 export LD_LIBRARY_PATH=$CLIB
 
 ./cnautilus \
--seqin test_data/1hr2_final.fasta \
--mtzin test_data/1hr2_final.mtz \
+-seqin data/1hr2/1hr2_final.fasta \
+-mtzin data/1hr2/1hr2_final.mtz \
 -colin-fo FP,SIGFP \
 -colin-fc FWT,PHWT \
 -colin-free FREE \
 -cycles 3 \
 -anisotropy-correction \
--pdbout test_data/nautilus.pdb
+-pdbout data/1hr2/nautilus_output.pdb

@@ -56,6 +56,15 @@ class NucleicAcidTargets {
   const clipper::MiniMol prune( const clipper::MiniMol& mol ) const;
   const clipper::MiniMol rebuild_chain( const clipper::Xmap<float>& xmap, const clipper::MiniMol& mol ) const;
 
+//  Use correlation based function to score the fragment
+  const float calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask);
+  const float score_na_fragment(const clipper::Xmap<float>& xmap, const NucleicAcidDB::NucleicAcid fragment);
+  const float score_binucleotide(const clipper::Xmap<float>& xmap, NucleicAcidDB::Chain current_fragment );
+
+
+  const void dump_ed_around_fragment(const clipper::Xmap<float>& xmap, const NucleicAcidDB::NucleicAcid fragment);
+
+
  private:
   NucleicAcidDB::Chain nadb;
   NucleicAcidDB::NucleicAcid narepr;

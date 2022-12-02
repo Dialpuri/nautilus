@@ -9,8 +9,8 @@ import multiprocessing
 
 @dataclass
 class Parameters:
-    data_dir: str = './tests/test_files/'
-    test_list_dir: str = './data/test_structures/data'
+    data_dir: str = './tests/test_output/correlation_function/1hr2_library/'
+    test_list_dir: str = './tests/test_structures'
     number_of_cycles: str = "3"
     library_list_path: str = './tests/test_files/rebuilt_filenames.txt'
     library_dir_path: str = './tests/test_library/'
@@ -23,8 +23,6 @@ def run_nautilus(test_pdb):
 
     library_export = "export LD_LIBRARY_PATH=$CLIB:$LD_LIBRARY_PATH"
     nautilus_cmd = f"""./cnautilus \
--pdblistin {params.library_list_path} \
--pdblistdir {params.library_dir_path} \
 -seqin {test_pdb_seq} \
 -mtzin {test_pdb_mtz} \
 -colin-fo FP,SIGFP \
@@ -33,6 +31,8 @@ def run_nautilus(test_pdb):
 -anisotropy-correction \
 -pdbout {out_file_path}"""
 # -colin-free FREE \
+# -pdblistin {params.library_list_path} \
+# -pdblistdir {params.library_dir_path} \
 
     os.system(library_export)
     subprocess.run(nautilus_cmd, shell=True, stdout=subprocess.DEVNULL)

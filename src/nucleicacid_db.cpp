@@ -4,7 +4,9 @@
 
 #include "nucleicacid_db.h"
 #include <fstream>
-#include <iomanip> 
+#include <iomanip>
+#include <clipper/contrib/function_object_bases.h>
+#include <clipper/clipper-contrib.h>
 
 namespace NucleicAcidDB {
 
@@ -372,6 +374,136 @@ void NucleicAcid::dump_monomer_to_pdb(std::string name, std::string path) {
 
     file.close();
     
+}
+
+std::vector<float> NucleicAcid::get_bounding_box(){
+
+    std::vector<float> x_positions = {p_x, o5x, c5x, c4x, o4x, c3x, o3x, c2x, c1x, n_x};
+    std::vector<float> y_positions = {p_y, o5y, c5y, c4y, o4y, c3y, o3y, c2y, c1y, n_y};
+    std::vector<float> z_positions = {p_z, o5z, c5z, c4z, o4z, c3z, o3z, c2z, c1z, n_z};
+
+    float min_x = 1e9;
+    float max_x = -1e9;
+    float min_y = 1e9;
+    float max_y = -1e9;
+    float min_z = 1e9;
+    float max_z = -1e9;
+
+    for(int i = 0; i < x_positions.size(); i++) {
+        if (min_x > x_positions[i]) {
+            min_x = x_positions[i];
+        }
+        std::cout << "maxx" << max_x << " xpos " << x_positions[i] << std::endl;
+        if (max_x < x_positions[i]) {
+            max_x = x_positions[i];
+        }
+        if (min_y > y_positions[i]) {
+            min_y = y_positions[i];
+        }
+        if (max_y < y_positions[i]) {
+            max_y = y_positions[i];
+        }
+        if (min_z > z_positions[i]) {
+            min_z = z_positions[i];
+        }
+        if (max_z < z_positions[i]) {
+            max_z = z_positions[i];
+        }
+    }
+
+//    std::cout << "[BOUNDING BOX] : " <<
+//        "min x : " << min_x <<
+//        " max x : " << max_x <<
+//        " max y : " << min_y <<
+//        " max y : " << max_y <<
+//        " min z : " << min_z <<
+//        " max z : " << max_z << std::endl;
+
+    std::vector<float> return_vector = {
+            min_x, max_x, min_y, max_y, min_z, max_z
+    };
+    return return_vector;
+}
+
+clipper::Atom_list NucleicAcid::return_atom_list() {
+    const clipper::Coord_orth p = coord_p();
+    const clipper::Coord_orth o5 = coord_o5();
+    const clipper::Coord_orth c5 = coord_c5();
+    const clipper::Coord_orth c4 = coord_c4();
+    const clipper::Coord_orth o4 = coord_o4();
+    const clipper::Coord_orth c3 = coord_c3();
+    const clipper::Coord_orth o3 = coord_o3();
+    const clipper::Coord_orth c2 = coord_c2();
+    const clipper::Coord_orth c1 = coord_c1();
+    const clipper::Coord_orth n = coord_n();
+
+    clipper::Atom atom_p;
+    atom_p.set_coord_orth(p);
+    atom_p.set_element("P");
+    atom_p.set_occupancy(15.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_o5;
+    atom_o5.set_coord_orth(o5);
+    atom_p.set_element("O");
+    atom_p.set_occupancy(8.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_c5;
+    atom_c5.set_coord_orth(c5);
+    atom_c5.set_element("C");
+    atom_p.set_occupancy(6.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_c4;
+    atom_c4.set_coord_orth(c4);
+    atom_p.set_element("C");
+    atom_p.set_occupancy(6.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_o4;
+    atom_o4.set_coord_orth(o4);
+    atom_p.set_element("O");
+    atom_p.set_occupancy(8.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_c3;
+    atom_c3.set_coord_orth(c3);
+    atom_p.set_element("C");
+    atom_p.set_occupancy(6.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_c2;
+    atom_c2.set_coord_orth(c2);
+    atom_p.set_element("C");
+    atom_p.set_occupancy(6.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_c1;
+    atom_c1.set_coord_orth(c1);
+    atom_p.set_element("C");
+    atom_p.set_occupancy(6.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_n;
+    atom_n.set_coord_orth(n);
+    atom_p.set_element("N");
+    atom_p.set_occupancy(7.0);
+    atom_p.set_u_iso(1.0);
+
+    std::vector<clipper::Atom> return_list;
+    return_list.push_back(atom_p);
+    return_list.push_back(atom_o5);
+    return_list.push_back(atom_c5);
+    return_list.push_back(atom_c4);
+    return_list.push_back(atom_o4);
+    return_list.push_back(atom_c3);
+    return_list.push_back(atom_c2);
+    return_list.push_back(atom_c1);
+    return_list.push_back(atom_n);
+
+    clipper::Atom_list atoms = {return_list};
+    return atoms;
 }
 
 // Chain classes
