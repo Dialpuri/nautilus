@@ -312,6 +312,11 @@ int main( int argc, char** argv )
     mol_wrk = natools.find( xwrk, mol_wrk, nhit/2, nhit/2, srchst );
     log.log( "FIND", mol_wrk, verbose >= 5 );
 
+    clipper::MMDBfile mmdb_file;
+    mmdb_file.export_minimol(mol_wrk);
+    std::string output_file = "./debug/sugar_positions/nhit=" + std::to_string(nhit) + ".pdb" ;
+    mmdb_file.write_file(static_cast<clipper::String>(output_file));
+
     // grow chains
     mol_wrk = natools.grow( xwrk, mol_wrk, 25, 0.001 );
     log.log( "GROW", mol_wrk, verbose >= 5 );
