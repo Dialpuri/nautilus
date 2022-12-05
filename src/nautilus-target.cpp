@@ -436,7 +436,10 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
 
     // narepr.dump_monomer_to_pdb("narepr", "./debug/narepr");
 
-    clipper::MiniMol mol_new = mol;
+  clipper::MiniMol mol_new = mol;
+  clipper::MMDBfile dump_init;
+  dump_init.export_minimol(mol);
+  dump_init.write_file("./debug/sugar_positions/1hr2.pdb");
 
     // make a list of rotations
     std::vector<clipper::RTop_orth> rots;
@@ -525,9 +528,9 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
         mol_new.insert(mp);
 //        Dump NA and compare
     }
-    clipper::MMDBfile mfile;
-    mfile.export_minimol(mol_new);
-    mfile.write_file("./debug/sugar_postions/sugar_positions.pdb");
+//    clipper::MMDBfile mfile;
+//    mfile.export_minimol(mol_new);
+//    mfile.write_file("./debug/sugar_postions/sugar_positions.pdb");
 
     // build bi-units on phosphates from db fragments
     for (int i = 0; i < std::min(int(filter_p.size()), nphosp); i++) {
@@ -772,17 +775,39 @@ const clipper::MiniMol NucleicAcidTargets::rebuild_chain(const clipper::Xmap<flo
 }
 const float NucleicAcidTargets::calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask) {
 
-    clipper::Grid_sampling grid_sampling = xmap.grid_sampling();
+    clipper::Grid_sampling grid_sampling = mask.grid_sampling();
     std::cout << "Grid sampling " << grid_sampling.format() << std::endl;
+    std::cout << "Nu" << grid_sampling.nu() << " nv " << grid_sampling.nv() << " nw " << grid_sampling.nw() << std::endl;
 
+    int nu = grid_sampling.nu();
+    int nv = grid_sampling.nv();
+    int nw = grid_sampling.nw();
 
+//    clipper::Xmap<float> local_mask = *(mask);
+    clipper::Xmap_base::Map_reference_coord iu, iv, iw;
+    clipper::Xmap_base::Map_reference_coord i0 = clipper::Xmap_base::Map_reference_coord(xmap);
+    for (iu = i0; iu.coord().u() < grid_sampling.nu(); iu.next_u()) {
+        for (iv = iu; iv.coord().v() < grid_sampling.nv(); iv.next_v()) {
+            for (iw = iv; iw.coord().w() < grid_sampling.nw(); iw.next_w()) {
+//                std::cout << "Xmap[all] == " << xmap[iw] << std::endl;
+                clipper::Coord_orth current_coord = iw.coord_orth();
 
+                std::cout << "iw " << current_coord.x() << " " << current_coord.y() << " " << current_coord.z() << " " << xmap[iw] << " " << mask[iw] << std::endl;
+
+                if (mask[iw] == 1.0) {
+                    std::cout << "Xmap[iw] == " << xmap[iw] << std::endl;
+                    std::cout << std::endl;
+                }
+            }
+        }
+    }
     return 0.0f;
 }
 
-const float NucleicAcidTargets::score_na_fragment(const clipper::Xmap<float> &xmap, NucleicAcidDB::NucleicAcid fragment) {
+const float NucleicAcidTargets::score_na_fragment(const clipper::Xmap<float> &xmap, NucleicAcidDB::NucleicAcid& fragment) {
 
     clipper::Atom_list atom_list = fragment.return_atom_list();
+
 
     clipper::Xmap<float> mask_xmap = xmap;
 
@@ -791,6 +816,7 @@ const float NucleicAcidTargets::score_na_fragment(const clipper::Xmap<float> &xm
 
     calculate_correlation(xmap, mask_xmap);
 
+//
 //    clipper::CCP4MAPfile map_file;
 //    map_file.open_write("./debug/mask_xmap.map");
 //    map_file.export_xmap(mask_xmap);
@@ -856,13 +882,14 @@ const void NucleicAcidTargets::dump_ed_around_fragment(const clipper::Xmap<float
 }
 
 const float
-NucleicAcidTargets::score_binucleotide(const clipper::Xmap<float> &xmap, NucleicAcidDB::Chain current_fragment) {
+NucleicAcidTargets::score_binucleotide(const clipper::Xmap<float> &xmap, NucleicAcidDB::Chain& current_fragment) {
     float score = 0.0;
 
 //    NucleicAcidDB::NucleicAcid::return_atom_list(xmap);
 
 //    score = score + score_na_fragment(xmap,current_fragment[0]);
 //    score = score + score_na_fragment(xmap, current_fragment[1]);
+
     score += score_na_fragment(xmap, current_fragment[0]);
 
     return score;

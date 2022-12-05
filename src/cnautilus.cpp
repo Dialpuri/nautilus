@@ -293,7 +293,9 @@ int main( int argc, char** argv )
 
   // store copy of input model
   clipper::MiniMol mol_wrk_in = mol_wrk;
-
+    clipper::MMDBfile dump_init;
+    dump_init.export_minimol(mol_wrk);
+    dump_init.write_file("./debug/sugar_positions/1hr2.pdb");
   // map stats
   natools.init_stats( xwrk );
   NautilusLog log( title ); // edited
