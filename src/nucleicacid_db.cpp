@@ -357,6 +357,7 @@ void NucleicAcid::dump_monomer_to_pdb(std::string name, std::string path) {
   
     std::cout << "Dumping " << name << " to pdb file" << std::endl;
     std::string file_path = path + "/" + name + ".pdb";
+    std::cout << file_path << std::endl;
     std::ofstream file(file_path);
 
     file << std::fixed << std::setprecision(3);

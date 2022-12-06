@@ -8,6 +8,8 @@
 #include "nautilus-ss-find.h"
 #include <typeinfo>
 #include <algorithm>
+#include <fstream>
+#include <iomanip>
 
 
 void NucleicAcidTarget::init(const float c_hi[][3], const float c_lo[][3], const float c_repr[3][3], const int ncoord) {
@@ -243,6 +245,8 @@ NucleicAcidDB::NucleicAcid
 NucleicAcidTargets::next_na_group(const clipper::Xmap<float> &xmap, const NucleicAcidDB::NucleicAcid &na) const {
     NucleicAcidDB::NucleicAcid nmax;
     float smax = -1.0e20;
+    std::vector<NucleicAcidDB::NucleicAcid*> potential_fragments;
+
     for (int p = 0; p < nadb.size() - 1; p++) {
         NucleicAcidDB::Chain frag = nadb.extract(p, 2);
         if (frag.is_continuous()) {
@@ -252,9 +256,24 @@ NucleicAcidTargets::next_na_group(const clipper::Xmap<float> &xmap, const Nuclei
             if (score > smax) {
                 smax = score;
                 nmax = frag[1];
+                potential_fragments.push_back(&frag[1]);
             }
         }
     }
+
+    float correlation_score_max = -1.0e20;
+    NucleicAcidDB::NucleicAcid best_na_fragment;
+
+    for (NucleicAcidDB::NucleicAcid* potential_na: potential_fragments) {
+        float correlation_score = NucleicAcidTargets::score_na_fragment(xmap, *potential_na);
+        if (correlation_score > correlation_score_max) {
+
+            best_na_fragment = *potential_na;
+            correlation_score_max = correlation_score;
+        }
+    }
+
+//    To implement new correlation score change this to return best_na_fragment
     return nmax;
 }
 
@@ -437,9 +456,6 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
     // narepr.dump_monomer_to_pdb("narepr", "./debug/narepr");
 
   clipper::MiniMol mol_new = mol;
-  clipper::MMDBfile dump_init;
-  dump_init.export_minimol(mol);
-  dump_init.write_file("./debug/sugar_positions/1hr2.pdb");
 
     // make a list of rotations
     std::vector<clipper::RTop_orth> rots;
@@ -506,6 +522,8 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
         if (atoms.size() == 0) filter_p.push_back(found_p[i]);
     }
 
+    int residue_number = 0;
+
     // build mono-units on sugars from db fragments
     for (int i = 0; i < std::min(int(filter_s.size()), nsugar); i++) {
         std::vector<clipper::Coord_orth> v1(3), v2(3);
@@ -523,9 +541,13 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
         clipper::RTop_orth rtdb(v2, v1);
         na.transform(rtdb);
         clipper::MPolymer mp;
-        na.set_type('?');
-        mp.insert(na.mmonomer());
+        na.set_type('U');
+        auto monomer_ = na.mmonomer();
+        mp.set_id("A");
+        monomer_.set_id(std::to_string(residue_number));
+        mp.insert(monomer_);
         mol_new.insert(mp);
+        residue_number++;
 //        Dump NA and compare
     }
 //    clipper::MMDBfile mfile;
@@ -542,11 +564,21 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
         v1[0] = rtop * target_p.standard()[0]; // O3'
         v1[1] = rtop * target_p.standard()[1]; // P
         v1[2] = rtop * target_p.standard()[2]; // O5'
+
+        std::vector<std::pair<std::string, clipper::Coord_orth>> debug_atoms = {
+                std::make_pair("O", v1[0]),
+                std::make_pair("P", v1[1]),
+                std::make_pair("O", v1[2]),
+        };
+
+//        NucleicAcidTargets::dump_search_atoms(debug_atoms, std::string("./debug/search_atoms"), std::string("db_fragment_v1"));
+
         float smax = -1.0e20;
         int smax_index;
         clipper::MPolymer mpmax;
         int mpmax_index;
         std::vector<int> high_scoring_indexes;
+        std::vector<float> high_scores;
 
         //  Search the nucleic acid database for a fragment which is the best fit.
         for (int j = 0; j < nadb.size() - 1; j++) {
@@ -556,10 +588,20 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
                 v2[0] = frag[0].coord_o3();
                 v2[1] = frag[1].coord_p();
                 v2[2] = frag[1].coord_o5();
+
+                std::vector<std::pair<std::string, clipper::Coord_orth>> debug_atoms = {
+                        std::make_pair("O", v2[0]),
+                        std::make_pair("P", v2[1]),
+                        std::make_pair("O", v2[2]),
+                };
+
+//                NucleicAcidTargets::dump_search_atoms(debug_atoms, std::string("./debug/search_atoms"), std::string("db_fragment_v2_"+std::to_string(j)));
+
                 clipper::RTop_orth rtdb(v2, v1);
                 frag.transform(rtdb);
                 float score = (score_sugar(xmap, frag[0]) +
                                score_sugar(xmap, frag[1]));
+
                 if (score > smax) {
                     // Here is where the new score should go, if the score improves then we should run the more intense scoring algorithm
                     smax = score;
@@ -571,37 +613,49 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
 
         float best_fragment_rho = -1.0e20;
 
-        for (int i = 0; i < high_scoring_indexes.size(); i++) {
-            int index = high_scoring_indexes[i];
-//            if (high_scoring_indexes.size() > 2) {
-//                if (i < high_scoring_indexes.size()-2) {
-//                    continue;
-//                }
-//            }
+        for (int k = 0; k < high_scoring_indexes.size(); k++) {
+
+            if (high_scoring_indexes.size() > 2) {
+                if (k < high_scoring_indexes.size()-2) {
+                    continue;
+                }
+            }
+
+            int index = high_scoring_indexes[k];
 
             // Score with more complex function!
             // Append most probable to the mol_new
             NucleicAcidDB::Chain current_fragment = nadb.extract(index, 2);
 
             float rho_score = score_binucleotide(xmap, current_fragment);
-//            dump_ed_around_fragment(xmap, current_fragment[0]);
 
             if (rho_score > best_fragment_rho) {
                 best_fragment_rho = rho_score;
                 clipper::MPolymer mpx;
-                current_fragment[0].set_type('?');
-                current_fragment[1].set_type('?');
-                mpx.insert(current_fragment[0].mmonomer());
-                mpx.insert(current_fragment[1].mmonomer());
+                current_fragment[0].set_type('U');
+                current_fragment[1].set_type('U');
+                mpx.set_id("B");
+                clipper::MMonomer monomer_0 = current_fragment[0].mmonomer();
+                monomer_0.set_id(std::to_string(residue_number));
+                residue_number++;
+                auto monomer_1 = current_fragment[1].mmonomer();
+                monomer_1.set_id(std::to_string(residue_number));
+                mpx.insert(monomer_0);
+                mpx.insert(monomer_1);
                 mpmax = mpx;
                 mpmax_index = index;
+                residue_number++;
+//                exit(1);
             }
         }
+
+//        std::cout << "smax - " << smax_index << " and rho - " << mpmax_index << " len is " << high_scoring_indexes.size() << std::endl;
 
 
         // std::cout << "Best MPX is being inserted with best rho " << best_fragment_rho <<  std::endl;
         mol_new.insert(mpmax);
     }
+//    exit(1);
     return mol_new;
 }
 
@@ -773,126 +827,89 @@ const clipper::MiniMol NucleicAcidTargets::rebuild_chain(const clipper::Xmap<flo
     }
     return mol_new;
 }
-const float NucleicAcidTargets::calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask) {
+const float NucleicAcidTargets::calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask) const {
 
     clipper::Grid_sampling grid_sampling = mask.grid_sampling();
-    std::cout << "Grid sampling " << grid_sampling.format() << std::endl;
-    std::cout << "Nu" << grid_sampling.nu() << " nv " << grid_sampling.nv() << " nw " << grid_sampling.nw() << std::endl;
 
-    int nu = grid_sampling.nu();
-    int nv = grid_sampling.nv();
-    int nw = grid_sampling.nw();
-
-//    clipper::Xmap<float> local_mask = *(mask);
+    float sum_density_xmap = 0.0f;
+    int no_points = 0;
     clipper::Xmap_base::Map_reference_coord iu, iv, iw;
     clipper::Xmap_base::Map_reference_coord i0 = clipper::Xmap_base::Map_reference_coord(xmap);
     for (iu = i0; iu.coord().u() < grid_sampling.nu(); iu.next_u()) {
         for (iv = iu; iv.coord().v() < grid_sampling.nv(); iv.next_v()) {
             for (iw = iv; iw.coord().w() < grid_sampling.nw(); iw.next_w()) {
-//                std::cout << "Xmap[all] == " << xmap[iw] << std::endl;
+
                 clipper::Coord_orth current_coord = iw.coord_orth();
 
-                std::cout << "iw " << current_coord.x() << " " << current_coord.y() << " " << current_coord.z() << " " << xmap[iw] << " " << mask[iw] << std::endl;
-
                 if (mask[iw] == 1.0) {
-                    std::cout << "Xmap[iw] == " << xmap[iw] << std::endl;
-                    std::cout << std::endl;
+                    sum_density_xmap = sum_density_xmap + xmap[iw];
+                    no_points++;
                 }
             }
         }
     }
-    return 0.0f;
+
+    float mean_density_xmap = sum_density_xmap / no_points;
+//    std::cout << "[calculate_correlation] = " << mean_density_xmap << std::endl;
+    return mean_density_xmap;
 }
 
-const float NucleicAcidTargets::score_na_fragment(const clipper::Xmap<float> &xmap, NucleicAcidDB::NucleicAcid& fragment) {
+const float
+NucleicAcidTargets::score_na_fragment(const clipper::Xmap<float> &xmap, NucleicAcidDB::NucleicAcid& fragment) const {
 
     clipper::Atom_list atom_list = fragment.return_atom_list();
 
-
     clipper::Xmap<float> mask_xmap = xmap;
 
-    clipper::EDcalc_mask<float> masker;
+    clipper::EDcalc_mask<float> masker(1.5);
     masker(mask_xmap, atom_list);
 
-    calculate_correlation(xmap, mask_xmap);
+    clipper::CCP4MAPfile mapout;
+    mapout.open_write("./debug/masks/mask.map");
+    mapout.export_xmap(mask_xmap);
+    mapout.close_write();
 
-//
-//    clipper::CCP4MAPfile map_file;
-//    map_file.open_write("./debug/mask_xmap.map");
-//    map_file.export_xmap(mask_xmap);
-//    map_file.close_write();
-//    map_file.open_write("./debug/xmap.map");
-//    map_file.export_xmap(xmap);
-//    map_file.close_write();
+    mapout.open_write("./debug/masks/xmap.mtz");
+    mapout.export_xmap(xmap);
+    mapout.close_write();
 
-    return 0;
 
+    float mean_density = calculate_correlation(xmap, mask_xmap);
+    return mean_density;
 }
 
-
-
-// Unfinished
-const void NucleicAcidTargets::dump_ed_around_fragment(const clipper::Xmap<float> &xmap, NucleicAcidDB::NucleicAcid fragment) {
-    typedef clipper::Interp_cubic I;
-
-    const clipper::Cell &cell = xmap.cell();
-
-
-//    Get bounding box for fragment
-    std::vector<float> bounding_box = fragment.get_bounding_box();
-
-    float min_x = bounding_box[0];
-    float max_x = bounding_box[1];
-    float min_y = bounding_box[2];
-    float max_y = bounding_box[3];
-    float min_z = bounding_box[4];
-    float max_z = bounding_box[5];
-
-    float x_len = bounding_box[1] - bounding_box[0];
-    float y_len = bounding_box[3] - bounding_box[2];
-    float z_len = bounding_box[5] - bounding_box[4];
-
-    float number_of_dumps = 8;
-    float x_step = x_len / number_of_dumps;
-    float y_step = y_len / number_of_dumps;
-    float z_step = z_len / number_of_dumps;
-
-    std::vector<std::vector<float>> rho_values;
-
-    for (int i = 0; i < x_step; i++) {
-        for (int j = 0; j < y_step; j++) {
-            for (int k = 0; k < z_step; k++) {
-
-            }
-        }
-    }
-
-    std::cout << "X len " << x_len << " Y len " << y_len << " Z len " << z_len << std::endl;
-
-    float rho = 0.0;
-    rho += xmap.interp<I>(fragment.coord_p().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_o5().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_c5().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_c4().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_o4().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_c3().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_o3().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_c2().coord_frac(cell));
-    rho += xmap.interp<I>(fragment.coord_c1().coord_frac(cell));
-}
 
 const float
 NucleicAcidTargets::score_binucleotide(const clipper::Xmap<float> &xmap, NucleicAcidDB::Chain& current_fragment) {
     float score = 0.0;
 
-//    NucleicAcidDB::NucleicAcid::return_atom_list(xmap);
-
-//    score = score + score_na_fragment(xmap,current_fragment[0]);
-//    score = score + score_na_fragment(xmap, current_fragment[1]);
-
     score += score_na_fragment(xmap, current_fragment[0]);
+    score += score_na_fragment(xmap, current_fragment[1]);
+
+//    current_fragment[0].dump_monomer_to_pdb("fragment_0", "./debug/sugar_positions");
+//    current_fragment[1].dump_monomer_to_pdb("fragment_1", "./debug/sugar_positions");
 
     return score;
+}
+
+void NucleicAcidTargets::dump_search_atoms(std::vector<std::pair<std::string, clipper::Coord_orth>> input_atoms, std::basic_string<char> path, std::basic_string<char> name) {
+
+    std::cout << "Dumping " << name << " to pdb file" << std::endl;
+    std::string file_path = path + "/" + name + ".pdb";
+    std::ofstream file(file_path);
+
+    file << std::fixed << std::setprecision(3);
+
+    for (auto pair: input_atoms) {
+        clipper::Coord_orth coords = pair.second;
+        float x = coords.x();
+        float y = coords.y();
+        float z = coords.z();
+
+        file << "ATOM      1  " << pair.first << "     A A   1      " + to_string_with_precision(x) + " " + to_string_with_precision(y) + " " + to_string_with_precision(z) + "  1.00 10.00           " << pair.first << "\n";
+
+    }
+
 }
 
 /*

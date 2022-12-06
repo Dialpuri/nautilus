@@ -29,10 +29,10 @@ def run_nautilus(test_pdb):
 -colin-hl sfcalc.ABCD.A,sfcalc.ABCD.B,sfcalc.ABCD.C,sfcalc.ABCD.D \
 -cycles {params.number_of_cycles} \
 -anisotropy-correction \
+-pdblistin {params.library_list_path} \
+-pdblistdir {params.library_dir_path} \
 -pdbout {out_file_path}"""
 # -colin-free FREE \
-# -pdblistin {params.library_list_path} \
-# -pdblistdir {params.library_dir_path} \
 
     os.system(library_export)
     subprocess.run(nautilus_cmd, shell=True, stdout=subprocess.DEVNULL)
@@ -45,7 +45,8 @@ def run_completeness_script(test_pdb):
     python_cmd = f"python scripts/completeness.py {out_file_path} {comparison_pdb_path} {completeness_out_path}"
 
     if os.path.isfile(out_file_path):
-        subprocess.run(python_cmd, shell=True, stdout=subprocess.DEVNULL)
+        subprocess.run(python_cmd, shell=True)
+        # , stdout=subprocess.DEVNULL)
 
 
 def get_test_files():

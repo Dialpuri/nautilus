@@ -120,7 +120,7 @@ def view_results():
 
     plt.title("Orignal Scoring function vs New Scoring Function - Lib 1hr2 only")
     plt.tight_layout()
-    plt.savefig(f'./tests/test_output/correlation_function/1hr2_library/plot_orig_score_vs_new_score_lib_1hr2.png', dpi = 500)
+    plt.savefig(f'./tests/test_output/correlation_function/1hr2_library/updated_find+grow.png', dpi = 500)
     # plt.show()
 if __name__ == "__main__":
     view_results()

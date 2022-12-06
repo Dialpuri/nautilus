@@ -57,19 +57,35 @@ class NucleicAcidTargets {
   const clipper::MiniMol rebuild_chain( const clipper::Xmap<float>& xmap, const clipper::MiniMol& mol ) const;
 
 //  Use correlation based function to score the fragment
-  const float calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask);
-  const float score_na_fragment(const clipper::Xmap<float>& xmap, NucleicAcidDB::NucleicAcid& fragment);
+  const float calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask) const;
+  const float score_na_fragment(const clipper::Xmap<float>& xmap, NucleicAcidDB::NucleicAcid& fragment) const;
   const float score_binucleotide(const clipper::Xmap<float>& xmap, NucleicAcidDB::Chain& current_fragment );
 
 
   const void dump_ed_around_fragment(const clipper::Xmap<float>& xmap, NucleicAcidDB::NucleicAcid fragment);
+  void dump_search_atoms(std::vector<std::pair<std::string, clipper::Coord_orth>> input_atoms, std::basic_string<char> path, std::basic_string<char> name);
 
+    template <typename T>
+    std::string to_string_with_precision(const T a_value, const int n = 4)
+    {
+        std::ostringstream out;
+        out.precision(n);
+        out << std::fixed << a_value;
+        std::string out_str(6, '\0');
+
+        for (int i = 0; i < out.str().size(); i++) {
+            out_str[i] += out.str()[i];
+        }
+        return out_str;
+    }
 
  private:
   NucleicAcidDB::Chain nadb;
   NucleicAcidDB::NucleicAcid narepr;
   NucleicAcidTarget target_s, target_p;
   std::vector<SearchResult> found_s, found_p;
+
+
 };
 
 #endif
