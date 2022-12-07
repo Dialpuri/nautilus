@@ -34,8 +34,10 @@ FLAGS = \
 -D_GLIBCXX_USE_CXX11_ABI=0 \
 -g
 
-INCDIR = -I${CCP4}/include
-LIBDIR = -L${CCP4}/lib
+# INCDIR = -I${CCP4}/include
+INCDIR = -Iinclude
+# LIBDIR = -L${CCP4}/lib
+LIBDIR = -Llib
 CFLAGS = ${FLAGS} ${INCDIR} -c -g
 LFLAGS = ${FLAGS} ${LIBDIR} ${LIBS}
 
@@ -53,8 +55,8 @@ COMPLETE_PRINT = @echo "\e[1;32mBuilding complete!\e[0m"
 MKDIR_P = mkdir -p
 
 #Source CCP4
-IGNORE := $(shell bash -c "source /opt/xtal/ccp4-8.0/bin/ccp4.setup-sh; env | sed 's/=/:=/' | sed 's/^/export /' > makeenv")
-include makeenv
+# IGNORE := $(shell bash -c "source /opt/xtal/ccp4-8.0/bin/ccp4.setup-sh; env | sed 's/=/:=/' | sed 's/^/export /' > makeenv")
+# include makeenv
 
 $(shell mkdir -p $(BIN_DIR))
 

@@ -1,0 +1,130 @@
+export CCP4I_TCLTK:=/users/jsd523/scratch/CCP4/ccp4-8.0/bin
+export CCP4_HELPDIR:=/users/jsd523/scratch/CCP4/ccp4-8.0/help/
+export MANPATH:=/users/jsd523/scratch/CCP4/ccp4-8.0/share/man:/opt/apps/lmod/lmod/share/man:
+export XDG_SESSION_ID:=220131
+export TERM_PROGRAM:=vscode
+export HOSTNAME:=login2.pri.viking.alces.network
+export SSL_CERT_FILE:=/users/jsd523/scratch/CCP4/ccp4-8.0/etc/ssl/cacert.pem
+export CHTML:=/users/jsd523/scratch/CCP4/ccp4-8.0/html
+export GFORTRAN_UNBUFFERED_PRECONNECTED:=Y
+export TERM:=xterm-256color
+export SHELL:=/bin/bash
+export HISTSIZE:=1000
+export SSH_CLIENT:=172.18.78.72 55569 55890
+export MODULEPATH_ROOT:=/opt/apps/modulefiles
+export CONDA_SHLVL:=0
+export TERM_PROGRAM_VERSION:=1.73.1
+export LMOD_PKG:=/opt/apps/lmod/lmod
+export LMOD_VERSION:=7.8
+export CCP4:=/users/jsd523/scratch/CCP4/ccp4-8.0
+export CLIB:=/users/jsd523/scratch/CCP4/ccp4-8.0/lib
+export USER:=jsd523
+export CEXAM:=/users/jsd523/scratch/CCP4/ccp4-8.0/examples
+export LS_COLORS:=rs=0:di=38;5;27:ln=38;5;51:mh=44;38;5;15:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=05;48;5;232;38;5;15:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;34:*.tar=38;5;9:*.tgz=38;5;9:*.arc=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lha=38;5;9:*.lz4=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.tzo=38;5;9:*.t7z=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.Z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lrz=38;5;9:*.lz=38;5;9:*.lzo=38;5;9:*.xz=38;5;9:*.bz2=38;5;9:*.bz=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.war=38;5;9:*.ear=38;5;9:*.sar=38;5;9:*.rar=38;5;9:*.alz=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.cab=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.webm=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.axv=38;5;13:*.anx=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.axa=38;5;45:*.oga=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:
+export LMOD_sys:=Linux
+export BALBES_ROOT:=/users/jsd523/scratch/CCP4/ccp4-8.0/BALBES
+export CONDA_EXE:=/opt/apps/easybuild/software/lang/Miniconda3/4.7.10/bin/conda
+export CCP4I_TOP:=/users/jsd523/scratch/CCP4/ccp4-8.0/share/ccp4i
+export warpbin:=/users/jsd523/scratch/CCP4/arp_warp_8.0/bin/bin-x86_64-Linux
+export VIRTUAL_ENV:=/mnt/lustre/users/jsd523/CCP4/nautilus/py
+export _CE_CONDA:=
+export PATH:=/users/jsd523/scratch/CCP4/arp_warp_8.0/bin/bin-x86_64-Linux:/users/jsd523/scratch/CCP4/ccp4-8.0/etc:/users/jsd523/scratch/CCP4/ccp4-8.0/bin:/mnt/lustre/users/jsd523/CCP4/nautilus/py/bin:/users/jsd523/.vscode-server/bin/6261075646f055b99068d3688932416f2346dd3b/bin/remote-cli:/opt/apps/easybuild/software/lang/Miniconda3/4.7.10/condabin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/users/jsd523/.local/bin:/users/jsd523/bin:/users/jsd523/.local/bin:/users/jsd523/bin
+export MAIL:=/var/spool/mail/jsd523
+export warpdoc:=/users/jsd523/scratch/CCP4/arp_warp_8.0/manual
+export CCP4_OPEN:=UNKNOWN
+export PWD:=/users/jsd523/scratch/CCP4/nautilus
+export cw_ROOT:=/opt/flight-direct
+export CETC:=/users/jsd523/scratch/CCP4/ccp4-8.0/etc
+export LANG:=en_GB.UTF-8
+export MODULEPATH:=/etc/modulefiles:/usr/share/modulefiles:/opt/apps/easybuild/modules/base:/opt/apps/easybuild/modules/bio:/opt/apps/easybuild/modules/cae:/opt/apps/easybuild/modules/chem:/opt/apps/easybuild/modules/compiler:/opt/apps/easybuild/modules/data:/opt/apps/easybuild/modules/debugger:/opt/apps/easybuild/modules/devel:/opt/apps/easybuild/modules/geo:/opt/apps/easybuild/modules/ide:/opt/apps/easybuild/modules/lang:/opt/apps/easybuild/modules/lib:/opt/apps/easybuild/modules/math:/opt/apps/easybuild/modules/mpi:/opt/apps/easybuild/modules/numlib:/opt/apps/easybuild/modules/perf:/opt/apps/easybuild/modules/phys:/opt/apps/easybuild/modules/system:/opt/apps/easybuild/modules/toolchain:/opt/apps/easybuild/modules/tools:/opt/apps/easybuild/modules/vis:/opt/apps/easybuild/modules/all
+export CLIBD_MON:=/users/jsd523/scratch/CCP4/ccp4-8.0/lib/data/monomers/
+export CCP4_SCR:=/tmp/jsd523
+export VSCODE_GIT_ASKPASS_EXTRA_ARGS:=
+export SKIP_USERS:=root alces
+export LMOD_CMD:=/opt/apps/lmod/lmod/libexec/lmod
+export _CE_M:=
+export KRB5CCNAME:=KEYRING:persistent:106219
+export HISTCONTROL:=ignoredups
+export HOME:=/users/jsd523
+export SHLVL:=7
+export VSCODE_GIT_ASKPASS_MAIN:=/users/jsd523/.vscode-server/bin/6261075646f055b99068d3688932416f2346dd3b/extensions/git/dist/askpass-main.js
+export CRANK:=/users/jsd523/scratch/CCP4/ccp4-8.0/share/ccp4i/crank
+export FL_ROOT:=/opt/flight-direct
+export cw_SHELL:=bash
+export BASH_ENV:=/opt/apps/lmod/lmod/init/bash
+export LOGNAME:=jsd523
+export CONDA_PYTHON_EXE:=/opt/apps/easybuild/software/lang/Miniconda3/4.7.10/bin/python
+export CLIBD:=/users/jsd523/scratch/CCP4/ccp4-8.0/lib/data
+export VSCODE_GIT_IPC_HANDLE:=/run/user/106219/vscode-git-dc04f55554.sock
+export SSH_CONNECTION:=172.18.78.72 55569 144.32.247.22 55890
+export XDG_DATA_DIRS:=/users/jsd523/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+export cw_DIST:=el7
+export CBIN:=/users/jsd523/scratch/CCP4/ccp4-8.0/bin
+export VSCODE_IPC_HOOK_CLI:=/run/user/106219/vscode-ipc-1b89388e-98ec-474c-a844-1851f01ab660.sock
+export MODULESHOME:=/opt/apps/lmod/lmod
+export CINCL:=/users/jsd523/scratch/CCP4/ccp4-8.0/include
+export CCP4_MASTER:=/users/jsd523/scratch/CCP4
+export LMOD_SETTARG_FULL_SUPPORT:=no
+export LESSOPEN:=||/usr/bin/lesspipe.sh %s
+export MMCIFDIC:=/users/jsd523/scratch/CCP4/ccp4-8.0/lib/ccp4/cif_mmdic.lib
+export BROWSER:=/users/jsd523/.vscode-server/bin/6261075646f055b99068d3688932416f2346dd3b/bin/helpers/browser.sh
+export VSCODE_GIT_ASKPASS_NODE:=/users/jsd523/.vscode-server/bin/6261075646f055b99068d3688932416f2346dd3b/node
+export GIT_ASKPASS:=/users/jsd523/.vscode-server/bin/6261075646f055b99068d3688932416f2346dd3b/extensions/git/dist/askpass.sh
+export LOWEST_UID:=500
+export XDG_RUNTIME_DIR:=/run/user/106219
+export LMOD_DIR:=/opt/apps/lmod/lmod/libexec
+export FL_SOURCED:=true
+export COLORTERM:=truecolor
+export BASH_FUNC__cw_root():=() {  echo "$cw_ROOT"
+export }
+export BASH_FUNC_flight():=() {  if [[ $1 == 'mo'* && 'module' == "$1"* ]]; then
+export  shift 1;
+export  if [[ ! $(ps -o 'command:=' -p "$$" 2>/dev/null) =~ ^- ]]; then
+export  if [[ ! ":$cw_FLAGS:" :=~ :verbose-modules: ]]; then
+export  export cw_MODULES_VERBOSE:=0;
+export  fi;
+export  fi;
+export  case $1 in 
+export  fl* | al* | h* | -h | --help)
+export  if [[ ":$cw_FLAGS:" :=~ :nopager: ]]; then
+export  _flight 'module' "$@" 0>&1 2>&1;
+export  else
+export  _flight 'module' "$@" 0>&1 2>&1 | less -FRX;
+export  fi
+export  ;;
+export  *)
+export  if [[ ":$cw_FLAGS:" :=~ :nopager: ]]; then
+export  eval $(_flight 'module' "$@") 2>&1;
+export  else
+export  if [ -n "$POSIXLY_CORRECT" ]; then
+export  eval $(_flight 'module' "$@") 2>&1;
+export  else
+export  if [ "$1" :== "load" -o "$1" == "add" ]; then
+export  eval $(_flight 'module' "$@") 2>&1;
+export  else
+export  eval $(source $FL_ROOT/etc/runtime.sh && $FL_ROOT/bin/flight 'module' "$@" 2> >(less -FRX >&2)) 2>&1;
+export  fi;
+export  fi;
+export  fi
+export  ;;
+export  esac;
+export  else
+export  _flight "$@";
+export  fi
+export }
+export BASH_FUNC_module():=() {  eval $($LMOD_CMD bash "$@") && eval $(${LMOD_SETTARG_CMD:-:} -s sh)
+export }
+export BASH_FUNC__flight():=() {  ( set -e;
+export  source "$FL_ROOT"/etc/runtime.sh;
+export  cd "$FL_ROOT";
+export  bin/flight "$@" )
+export }
+export BASH_FUNC_al():=() {  flight "$@"
+export }
+export BASH_FUNC_alces():=() {  flight "$@"
+export }
+export BASH_FUNC_ml():=() {  eval $($LMOD_DIR/ml_cmd "$@")
+export }
+export BASH_FUNC_fl():=() {  flight "$@"
+export }
+export _:=/usr/bin/env
