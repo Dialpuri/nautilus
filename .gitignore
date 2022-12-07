@@ -13,7 +13,7 @@ py/*
 venv/*
 
 #SCRIPTS
-#scripts/*
+scripts/*
 *.sh
 
 #OUTPUT FILES
@@ -24,3 +24,5 @@ cnautilus
 
 #DEBUG FILES
 debug/*
+
+tests/test_files/*
