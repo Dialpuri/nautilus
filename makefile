@@ -36,7 +36,7 @@ FLAGS = \
 
 INCDIR = -I${CCP4}/include
 LIBDIR = -L${CCP4}/lib
-CFLAGS = ${FLAGS} ${INCDIR} -c
+CFLAGS = ${FLAGS} ${INCDIR} -c -g
 LFLAGS = ${FLAGS} ${LIBDIR} ${LIBS}
 
 SRC_DIR = src

@@ -7,8 +7,8 @@ import json
 
 def view_results():
 
-    test_completeness_path = f'data/library_test/6/completeness_files'
-    alternate_dir = 'tests/test_files/completeness_files'     
+    test_completeness_path = f'tests/test_comparisons/base_nautilus/completeness_files'
+    alternate_dir = 'tests/test_output/correlation_function/1hr2_library/completeness_files'
 
     all_data = []
     for file in os.scandir(test_completeness_path):
@@ -118,8 +118,9 @@ def view_results():
 ]
     ax2.plot(lims, lims, 'k-', alpha=0.75, zorder=0)
 
+    plt.title("Orignal Scoring function vs New Scoring Function - Lib 1hr2 only")
     plt.tight_layout()
-    plt.savefig(f'./tests/test_files/results_exec_vs_default.png', dpi = 500)
-
+    plt.savefig(f'./tests/test_output/correlation_function/1hr2_library/updated_find+grow.png', dpi = 500)
+    # plt.show()
 if __name__ == "__main__":
     view_results()

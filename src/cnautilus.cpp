@@ -312,6 +312,13 @@ int main( int argc, char** argv )
     mol_wrk = natools.find( xwrk, mol_wrk, nhit/2, nhit/2, srchst );
     log.log( "FIND", mol_wrk, verbose >= 5 );
 
+
+
+      clipper::MMDBfile dump_init;
+      dump_init.export_minimol(mol_wrk);
+      dump_init.write_file("./debug/sugar_positions/after_find_function.pdb");
+//      Give mol_wrk sensible residue names
+
     // grow chains
     mol_wrk = natools.grow( xwrk, mol_wrk, 25, 0.001 );
     log.log( "GROW", mol_wrk, verbose >= 5 );
