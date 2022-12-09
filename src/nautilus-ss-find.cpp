@@ -55,13 +55,26 @@ std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_
 {
   // make a list of indexed, intergerized, rotated lists
   std::vector<std::vector<std::pair<int,int> > > index_lists;
+
+//  i0 returns an int which represents the 0,0,0 coord.
   int i0 = mxgr.index( clipper::Coord_grid(0,0,0) );
+
+//  Iterate through the rotation operators
   for ( int r = 0; r < ops.size(); r++ ) {
+
+//  Get the current rotation translation operator
     clipper::RTop_orth op = ops[r];
     std::vector<std::pair<int,int> > tmp;
+
+//    Iterate through the target_cs which is std::vector<std::pair<clipper::Coord_orth, clipper::Coord_orth>>
+//    which is from NucleicAcidTargets
     for ( int i = 0; i < target_cs.size(); i++ ) {
+
+//    grrot is a RTop, get the coord map which is rotated based on grrot
       const clipper::Coord_map c1( grrot*(op*target_cs[i].first  ) );
       const clipper::Coord_map c2( grrot*(op*target_cs[i].second ) );
+
+//    Add a pair of integer points (rounded) relative to the origin.
       tmp.push_back( std::pair<int,int>( mxgr.index(c1.coord_grid()) - i0,
                                          mxgr.index(c2.coord_grid()) - i0 ) );
     }

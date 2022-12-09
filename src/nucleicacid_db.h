@@ -14,6 +14,61 @@
 
 namespace NucleicAcidDB {
 
+class BoundingBox {
+public:
+    int min_x, max_x, min_y, max_y, min_z, max_z;
+
+    int length_x() { return std::round(std::abs(max_x) - std::abs(min_x)) ;}
+    int length_y() { return std::round(std::abs(max_y) - std::abs(min_y)) ;}
+    int length_z() { return std::round(std::abs(max_z) - std::abs(min_z)) ;}
+
+
+    void format() {
+        std::cout <<
+        "Min X: " << min_x << " Max X: " << max_x <<
+        "Min Y: " << min_y << " Max Y: " << max_y <<
+        "Min Z: " << min_z << " Max Z: " << max_z <<
+        std::endl;
+    }
+
+    void dump_box_to_pdb(std::string file_path) {
+        clipper::MiniMol tmp_minimol;
+        clipper::MModel tmp_model;
+        clipper::MPolymer tmp_pol;
+        clipper::MMonomer tmp_mon;
+
+        clipper::Coord_orth c1_orth(min_x, min_y, min_z);
+        clipper::Coord_orth c2_orth(max_x, min_y, min_z);
+        clipper::Coord_orth c3_orth(min_x, max_y, min_z);
+        clipper::Coord_orth c4_orth(min_x, min_y, max_z);
+        clipper::Coord_orth c5_orth(max_x, max_y, min_z);
+        clipper::Coord_orth c6_orth(max_x, min_y, max_z);
+        clipper::Coord_orth c7_orth(min_x, max_y, max_z);
+        clipper::Coord_orth c8_orth(max_x, max_y, max_z);
+
+
+        std::vector<clipper::Coord_orth*> coordinates = {&c1_orth, &c2_orth, &c3_orth, &c4_orth, &c5_orth, &c6_orth, &c7_orth, &c8_orth};
+
+        for (clipper::Coord_orth* point: coordinates) {
+            clipper::Atom dummy_atom;
+            dummy_atom.set_coord_orth(*point);
+            dummy_atom.set_element("H");
+            tmp_mon.set_id("1");
+            tmp_mon.set_type("DUM");
+            tmp_mon.insert(clipper::MAtom(dummy_atom));
+        }
+
+        tmp_pol.set_id("A");
+        tmp_pol.insert(tmp_mon);
+        tmp_model.insert(tmp_pol);
+        tmp_minimol.insert(tmp_pol);
+
+
+        clipper::MMDBfile output_file;
+        output_file.export_minimol(tmp_minimol);
+        output_file.write_file(file_path);
+    }
+};
 
 /*!
   Class for storing compact nucleic acid main chain information for use
@@ -56,7 +111,7 @@ class NucleicAcid {
   void set_flag();  //!< set flag on the basis of atoms present
 
   void dump_monomer_to_pdb(std::string name, std::string path);
-  std::vector<float> get_bounding_box();
+  BoundingBox get_bounding_box();
   clipper::Atom_list return_atom_list();
 
   template <typename T>

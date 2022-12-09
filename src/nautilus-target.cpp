@@ -499,9 +499,9 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
         std::reverse(found_s.begin(), found_s.end());
         std::sort(found_p.begin(), found_p.end());
         std::reverse(found_p.begin(), found_p.end());
-        //std::cout << found_s.size() << "\t" << found_p.size() << std::endl;
-        //for ( int i = 0; i < clipper::Util::min( int(found_p.size()), 100 ); i++ )
-        //  std::cout << i << ":\tSgr: " << found_s[i].score << "\t" << found_s[i].rot << " " << found_s[i].trn << "\tPho: " << found_p[i].score << "\t" << found_p[i].rot << " " << found_p[i].trn << std::endl;
+//        std::cout << found_s.size() << "\t" << found_p.size() << std::endl;
+//        for ( int i = 0; i < clipper::Util::min( int(found_p.size()), 100 ); i++ )
+//          std::cout << i << ":\tSgr: " << found_s[i].score << "\t" << found_s[i].rot << " " << found_s[i].trn << "\tPho: " << found_p[i].score << "\t" << found_p[i].rot << " " << found_p[i].trn << std::endl;
     }
 
     const clipper::Grid_sampling &grid = xmap.grid_sampling();
@@ -574,9 +574,9 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
 //        NucleicAcidTargets::dump_search_atoms(debug_atoms, std::string("./debug/search_atoms"), std::string("db_fragment_v1"));
 
         float smax = -1.0e20;
-        int smax_index;
+//        int smax_index;
         clipper::MPolymer mpmax;
-        int mpmax_index;
+//        int mpmax_index;
         std::vector<int> high_scoring_indexes;
         std::vector<float> high_scores;
 
@@ -605,7 +605,7 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
                 if (score > smax) {
                     // Here is where the new score should go, if the score improves then we should run the more intense scoring algorithm
                     smax = score;
-                    smax_index = j;
+//                    smax_index = j;
                     high_scoring_indexes.push_back(j);
                 }
             }
@@ -643,7 +643,7 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
                 mpx.insert(monomer_0);
                 mpx.insert(monomer_1);
                 mpmax = mpx;
-                mpmax_index = index;
+//                mpmax_index = index;
                 residue_number++;
 //                exit(1);
             }
@@ -654,6 +654,8 @@ NucleicAcidTargets::find(const clipper::Xmap<float> &xmap, const clipper::MiniMo
 
         // std::cout << "Best MPX is being inserted with best rho " << best_fragment_rho <<  std::endl;
         mol_new.insert(mpmax);
+
+
     }
 //    exit(1);
     return mol_new;
@@ -827,20 +829,24 @@ const clipper::MiniMol NucleicAcidTargets::rebuild_chain(const clipper::Xmap<flo
     }
     return mol_new;
 }
-const float NucleicAcidTargets::calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask) const {
+const float NucleicAcidTargets::calculate_correlation(const clipper::Xmap<float>& xmap, const clipper::Xmap<float>& mask, NucleicAcidDB::BoundingBox bounding_box) const {
 
     clipper::Grid_sampling grid_sampling = mask.grid_sampling();
+
+    clipper::Coord_orth base_coord_orth = clipper::Coord_orth(bounding_box.min_x, bounding_box.min_y, bounding_box.min_z);
+    clipper::Coord_grid base_coord = base_coord_orth.coord_frac(xmap.cell()).coord_grid(grid_sampling);
+    clipper::Xmap_base::Map_reference_coord i0 = clipper::Xmap_base::Map_reference_coord(mask, base_coord);
+
+    clipper::Coord_orth end_coord_orth = clipper::Coord_orth(bounding_box.max_x, bounding_box.max_y, bounding_box.max_z);
+    clipper::Coord_grid end_coord = end_coord_orth.coord_frac(xmap.cell()).coord_grid(grid_sampling);
+    clipper::Xmap_base::Map_reference_coord iend = clipper::Xmap_base::Map_reference_coord(mask, end_coord);
 
     float sum_density_xmap = 0.0f;
     int no_points = 0;
     clipper::Xmap_base::Map_reference_coord iu, iv, iw;
-    clipper::Xmap_base::Map_reference_coord i0 = clipper::Xmap_base::Map_reference_coord(xmap);
-    for (iu = i0; iu.coord().u() < grid_sampling.nu(); iu.next_u()) {
-        for (iv = iu; iv.coord().v() < grid_sampling.nv(); iv.next_v()) {
-            for (iw = iv; iw.coord().w() < grid_sampling.nw(); iw.next_w()) {
-
-                clipper::Coord_orth current_coord = iw.coord_orth();
-
+    for (iu = i0; iu.coord().u() <= iend.coord().u(); iu.next_u()) {
+         for (iv = iu; iv.coord().v() <= iend.coord().v(); iv.next_v()) {
+             for (iw = iv; iw.coord().w() <= iend.coord().w(); iw.next_w()) {
                 if (mask[iw] == 1.0) {
                     sum_density_xmap = sum_density_xmap + xmap[iw];
                     no_points++;
@@ -849,32 +855,42 @@ const float NucleicAcidTargets::calculate_correlation(const clipper::Xmap<float>
         }
     }
 
-    float mean_density_xmap = sum_density_xmap / no_points;
-//    std::cout << "[calculate_correlation] = " << mean_density_xmap << std::endl;
-    return mean_density_xmap;
+    if (no_points > 0 ) {
+        float mean_density_xmap = sum_density_xmap / no_points;
+        return mean_density_xmap;
+    }
+    else {
+        return 0.0f;
+    }
 }
 
 const float
 NucleicAcidTargets::score_na_fragment(const clipper::Xmap<float> &xmap, NucleicAcidDB::NucleicAcid& fragment) const {
 
     clipper::Atom_list atom_list = fragment.return_atom_list();
+    NucleicAcidDB::BoundingBox bounding_box = fragment.get_bounding_box();
+
+
+//    fragment.dump_monomer_to_pdb("fragment_position.pdb", "./debug/sugar_positions");
+//    NautilusUtil::BoundingBox bounding_box = NautilusUtil::calculate_bounding_box(fragment);
 
     clipper::Xmap<float> mask_xmap = xmap;
 
     clipper::EDcalc_mask<float> masker(1.5);
     masker(mask_xmap, atom_list);
+//
+//    clipper::CCP4MAPfile mapout;
+//    mapout.open_write("./debug/masks/mask.map");
+//    mapout.export_xmap(mask_xmap);
+//    mapout.close_write();
+//
+//    clipper::CCP4MAPfile mtzout;
+//    mtzout.open_write("./debug/masks/xmap.map");
+//    mtzout.export_xmap(xmap);
+//    mtzout.close_write();
 
-    clipper::CCP4MAPfile mapout;
-    mapout.open_write("./debug/masks/mask.map");
-    mapout.export_xmap(mask_xmap);
-    mapout.close_write();
 
-    mapout.open_write("./debug/masks/xmap.mtz");
-    mapout.export_xmap(xmap);
-    mapout.close_write();
-
-
-    float mean_density = calculate_correlation(xmap, mask_xmap);
+    float mean_density = calculate_correlation(xmap, mask_xmap, bounding_box);
     return mean_density;
 }
 

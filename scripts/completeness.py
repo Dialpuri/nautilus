@@ -55,8 +55,6 @@ class Stats:
 def _calculate_stats(reference, matching):
     stats = Stats()
 
-    print(reference[0][0].first_conformer())
-
     for chain in reference[0]:
         for residue in chain.first_conformer():
             info = gemmi.find_tabulated_residue(residue.name)
@@ -108,5 +106,4 @@ def _matching_atom(structure, search, radius, residue, name, same_type):
 
 
 if __name__ == "__main__":
-    print("Script running!")
     _main()

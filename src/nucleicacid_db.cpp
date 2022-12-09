@@ -355,9 +355,9 @@ void NucleicAcid::dump_monomer_to_pdb(std::string name, std::string path) {
     // std::cout << "C1_X " << c1x << " C1_Y " << c1y << " C1_Z" << c1z << std::endl;
     // std::cout << "N_X " << n_x << " N_Y " << n_y << " N_Z" << n_z << std::endl;
   
-    std::cout << "Dumping " << name << " to pdb file" << std::endl;
+//    std::cout << "Dumping " << name << " to pdb file" << std::endl;
     std::string file_path = path + "/" + name + ".pdb";
-    std::cout << file_path << std::endl;
+//    std::cout << file_path << std::endl;
     std::ofstream file(file_path);
 
     file << std::fixed << std::setprecision(3);
@@ -377,7 +377,7 @@ void NucleicAcid::dump_monomer_to_pdb(std::string name, std::string path) {
     
 }
 
-std::vector<float> NucleicAcid::get_bounding_box(){
+BoundingBox NucleicAcid::get_bounding_box(){
 
     std::vector<float> x_positions = {p_x, o5x, c5x, c4x, o4x, c3x, o3x, c2x, c1x, n_x};
     std::vector<float> y_positions = {p_y, o5y, c5y, c4y, o4y, c3y, o3y, c2y, c1y, n_y};
@@ -394,7 +394,6 @@ std::vector<float> NucleicAcid::get_bounding_box(){
         if (min_x > x_positions[i]) {
             min_x = x_positions[i];
         }
-        std::cout << "maxx" << max_x << " xpos " << x_positions[i] << std::endl;
         if (max_x < x_positions[i]) {
             max_x = x_positions[i];
         }
@@ -420,10 +419,15 @@ std::vector<float> NucleicAcid::get_bounding_box(){
 //        " min z : " << min_z <<
 //        " max z : " << max_z << std::endl;
 
-    std::vector<float> return_vector = {
-            min_x, max_x, min_y, max_y, min_z, max_z
-    };
-    return return_vector;
+    BoundingBox return_box;
+    return_box.min_x = std::round(min_x - 2);
+    return_box.max_x = std::round(max_x + 2);
+    return_box.min_y = std::round(min_y - 2);
+    return_box.max_y = std::round(max_y + 2);
+    return_box.min_z = std::round(min_z - 2);
+    return_box.max_z = std::round(max_z + 2);
+
+    return return_box;
 }
 
 clipper::Atom_list NucleicAcid::return_atom_list() {
@@ -472,6 +476,12 @@ clipper::Atom_list NucleicAcid::return_atom_list() {
     atom_c3.set_coord_orth(c3);
     atom_p.set_element("C");
     atom_p.set_occupancy(6.0);
+    atom_p.set_u_iso(1.0);
+
+    clipper::Atom atom_o3;
+    atom_o4.set_coord_orth(o3);
+    atom_p.set_element("O");
+    atom_p.set_occupancy(8.0);
     atom_p.set_u_iso(1.0);
 
     clipper::Atom atom_c2;
