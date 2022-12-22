@@ -51,21 +51,39 @@ The available parameters are
     
 #### Descriptions
 mtzin - the input reflections data from the experiment e.g. 1hr2.mtz
+
 seqin - the sequence of the nucleic acid e.g. 1hr2.fasta
+
 pdbin - 
+
 pdblistin - the list of PDB files for use in the library
+
 pdblistdir - the directory containing all PDB files in the pdblistin 
+
 pdbout - the filepath of the output model e.g. 1hr2_output.pdb
+
 xmlout - 
+
 colin-fo - column headings for F<sub>obs</sub> e.g. FP, SIGFP
+
 coln-hl - column headings for Hendrickson-Lattman coefficients (ABCD) e.g. sfcalc.A, sfcalc.B, sfcalc.C, sfcalc.D
+
 colin-fc - column headings for F<sub>calc</sub> e.g FWT, PHWT
+
 colin-free - column heading for Free R Flag
+
 cycles - number of cycles to run
+
 anisotropy-correction - apply anisotropy correction
+
 -fragments - number of hits to be found in the first step 
+
 -resolution - the resolution of the data
+
 -pdbin-ref  - single PDB file for use as the library 
+
 -cif - output model in CIF format only
+
 -search-step - the step used in the fragment fitting angle search
+
 -verbose - level of logging output
