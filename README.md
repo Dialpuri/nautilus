@@ -19,7 +19,7 @@ where X.X is your CCP4 version.
 To compile this, just simply run: 
 
     make
-and the executable 'probe' should be created in the root directory of the project. 
+and the executable 'cnautilus' should be created in the root directory of the project. 
 
 ### Running
 
