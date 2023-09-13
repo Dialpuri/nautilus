@@ -1,5 +1,7 @@
 # Nautilus 
 
+![Workflow](https://github.com/Dialpuri/nautilus/actions/workflows/main.yml/badge.svg)
+
 This repository contains the nucleic acid model building software Nautilus, and is the site where any further developments on the software will be held. The original Nautilus software was written by Kevin Cowtan and this work is part of a PhD studentship funded by the Biotechnology and Biological Sciences Research Council (BBSRC)  awarded to Jordan Dialpuri.  
 ### Development
 
