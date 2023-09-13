@@ -43,6 +43,8 @@ int main( int argc, char** argv )
   clipper::String ippdb = "NONE";
   clipper::String ippdb_ref = "NONE";
   clipper::String ippdb_pho = "NONE";
+  clipper::String ippredicted_phos_map = "NONE"; // added by JSD
+
   clipper::String oppdb = "nautilus.pdb";
   clipper::String opmap = "NONE";
   clipper::String opxml = "NONE";
@@ -73,6 +75,8 @@ int main( int argc, char** argv )
       if ( ++arg < args.size() ) ippdb = args[arg];
     } else if ( args[arg] == "-pdbout" ) {
       if ( ++arg < args.size() ) oppdb = args[arg];
+    } else if (args[arg] == "-predicted-phos-map") {
+        if (++arg < args.size()) ippredicted_phos_map = args[arg];
     } else if ( args[arg] == "-mapout" ) {
       if ( ++arg < args.size() ) opmap  = args[arg];
     } else if ( args[arg] == "-xmlout" ) {
@@ -107,7 +111,7 @@ int main( int argc, char** argv )
     }
   }
   if ( args.size() <= 1 ) {
-    std::cout << "\nUsage: cnautilus\n\t-mtzin <filename>\t\tCOMPULSORY\n\t-seqin <filename>\n\t-pdbin <filename>\n\t-pdbout <filename>\n\t-xmlout <filename>\n\t-colin-fo <colpath>\n\t-colin-hl <colpath> or -colin-phifom <colpath>\n\t-colin-fc <colpath>\n\t-colin-free <colpath>\n\t-cycles <number>\n\t-anisotropy-correction\n\t-fragments <number>\n\t-resolution <resolution/A>\n\t-pdbin-ref <filename>\n\t-cif\t\t*will only output model in cif format\n\t-search-step <float>\t*search angle step\n\t-verbose <number>\n";
+    std::cout << "\nUsage: cnautilus\n\t-mtzin <filename>\t\tCOMPULSORY\n\t-seqin <filename>\n\t-pdbin <filename>\n\t-pdbout <filename>\n\t-predicted-phos-map <filename>\n\t-xmlout <filename>\n\t-colin-fo <colpath>\n\t-colin-hl <colpath> or -colin-phifom <colpath>\n\t-colin-fc <colpath>\n\t-colin-free <colpath>\n\t-cycles <number>\n\t-anisotropy-correction\n\t-fragments <number>\n\t-resolution <resolution/A>\n\t-pdbin-ref <filename>\n\t-cif\t\t*will only output model in cif format\n\t-search-step <float>\t*search angle step\n\t-verbose <number>\n";
     std::cout << "\nAn input mtz file for the work structure is required. Chains will be located and \ngrown for the work structure and written to the output pdb/cif file.\n";
     std::cout << "This involves following steps:\n finding, growing, joining, linking, pruning, rebuilding chains, sequencing, and rebuilding bases.\nIf the optional input pdb file is provided for the work structure, then the input model is extended.\n";
     return 1;
@@ -263,6 +267,15 @@ int main( int argc, char** argv )
     // find chains
     mol_wrk = natools.find( xwrk, mol_wrk, nhit/2, nhit/2, srchst );
     log.log( "FIND", mol_wrk, verbose >= 5 );
+
+    if (cyc == 0) {
+        Predictions predictions(ippredicted_phos_map);
+        MLFind ml_find = MLFind(predictions, xwrk);
+        ml_find.load_library_from_file(ippdb_ref);
+        clipper::MiniMol mol_find = ml_find.find();
+        log.log("FIND ML", mol_find, verbose >= 5);
+        mol_wrk = mol_find;
+    }
 
     // grow chains
     mol_wrk = natools.grow( xwrk, mol_wrk, 25, 0.001 );
