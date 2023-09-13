@@ -37,7 +37,7 @@ FLAGS = \
 -D_GLIBCXX_USE_CXX11_ABI=0 \
 -g
 
-#INCDIR = -Iinclude
+INCDIR = -Iinclude
 LIBDIR = -L${CCP4}/lib
 #LIBDIR = -Llib
 CFLAGS = ${FLAGS} ${INCDIR} -c -g
