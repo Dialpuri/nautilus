@@ -10,9 +10,8 @@ nautilus-tidy \
 nautilus-tools \
 nautilus-util \
 nucleicacid_db \
-nautilus-predict \
 nautilus-mlfind \
-nautilus-refine
+nautilus-refine \
 
 LIBS = \
 -lccp4c \
