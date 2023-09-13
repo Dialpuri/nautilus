@@ -321,7 +321,7 @@ void MLFind::load_library_from_file(const std::string &path) {
     std::cout << "Loaded library from file " << path << std::endl;
 }
 
-clipper::MiniMol MLFind::find(const std::string &phosphate_position_path) {
+clipper::MiniMol MLFind::find() {
 
     std::cout << "Beginning ML Find" << std::endl;
     clipper::MiniMol phosphate_positions = generate_phosphate_positions();

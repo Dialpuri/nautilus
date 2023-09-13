@@ -105,7 +105,7 @@ public:
     /// @brief Run finding algorithm, dump phosphate positions by passing in path
     /// @param phosphate_position_path
     /// @return
-    clipper::MiniMol find(const std::string &phosphate_position_path);
+    clipper::MiniMol find();
 
     /// @brief Load trinucleotide fragment into library
     /// @param path
