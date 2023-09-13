@@ -1,0 +1,33 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: make 
+      run: make -j -f makefile.test
+
+    - name: cnautilus
+      run: | 
+          export LD_LIBRARY_PATH=./lib
+          export CLIBD=./data
+          export CCP4=./
+          ./cnautilus \
+          -seqin tests/test_2a0p/2a0p.seq \
+          -mtzin tests/test_2a0p/2a0p.mtz \
+          -colin-fo FP,SIGFP \
+          -colin-fc sfcalc.F_phi.F,sfcalc.F_phi.phi \
+          -colin-free FREE \
+          -cycles 1 \
+          -anisotropy-correction \
+          -pdbout tests/test_2a0p/nautilus_output.pdb \
+          -predicted-phos-map tests/test_2a0p/2a0p_phos.map
