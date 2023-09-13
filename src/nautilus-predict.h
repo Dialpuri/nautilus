@@ -12,12 +12,12 @@
 class Predictions {
 public:
     Predictions(const std::string& phosphate_path) {
-        load_predicted_map(phosphate_path)
+        load_predicted_phosphate_map(phosphate_path);
     }
 
-    void load_predicted_map(const std::string& phosphate_path) {
+    void load_predicted_phosphate_map(const std::string& phosphate_path) {
         clipper::CCP4MAPfile file;
-        file.open_read(path);
+        file.open_read(phosphate_path);
         file.import_xmap(phosphate_map);
         file.close_read();
     }
