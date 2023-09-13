@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Nautilus Build and Run
 
 on:
   push:
@@ -13,6 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: make 
       run: make -j -f makefile.test
 
@@ -31,3 +32,14 @@ jobs:
           -anisotropy-correction \
           -pdbout tests/test_2a0p/nautilus_output.pdb \
           -predicted-phos-map tests/test_2a0p/2a0p_phos.map
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.7'
+    
+    - name: Install dependencies
+      run : | 
+        pip install gemmi 
+
+    - name : Run Completeness Script 
+      run : python tests/test_scripts/test_pdb_output.py tests/test_2a0p/nautilus_output.pdb tests/test_2a0p/pdb2a0p.ent --radius 2.0 14
