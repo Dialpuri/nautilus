@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <unordered_set>
+#include <algorithm>
 
 #include "nautilus-util.h"
 #include "nautilus-predict.h"
