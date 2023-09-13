@@ -9,9 +9,113 @@
 #include <clipper/clipper.h>
 #include <clipper/clipper-minimol.h>
 
+#include "nautilus-util.h"
+
 
 namespace NucleicAcidDB {
+    class NucleicAcidFull {
+    public:
+        NucleicAcidFull() {}
 
+        NucleicAcidFull(const clipper::MMonomer &monomer_1);
+
+        clipper::MMonomer get_mmonomer(int id = 0);
+        void transform( const clipper::RTop_orth& rtop );
+
+        void debug();
+
+        float score;
+        bool operator< (const NucleicAcidFull& other) const {
+            return score < other.score;
+        }
+
+        [[maybe_unused]] std::string get_type() const {
+            return base_type;
+        }
+
+        void set_triplet_id(int id) {m_triplet_id = id;}
+
+        std::string base_type;
+
+        int m_triplet_id = 0;
+        clipper::Atom_list return_atom_list();
+
+        clipper::Coord_orth P;
+        clipper::Coord_orth OP1;
+        clipper::Coord_orth OP2;
+        clipper::Coord_orth O5p1;
+        clipper::Coord_orth C5p1;
+        clipper::Coord_orth C4p1;
+        clipper::Coord_orth O4p1;
+        clipper::Coord_orth C3p1;
+        clipper::Coord_orth O3p1;
+        clipper::Coord_orth C2p1;
+        clipper::Coord_orth C1p1;
+        clipper::Coord_orth C2_1;
+        clipper::Coord_orth C4_1;
+        clipper::Coord_orth C5_1;
+        clipper::Coord_orth C6_1;
+        clipper::Coord_orth C8_1;
+        clipper::Coord_orth N1_1;
+        clipper::Coord_orth N2_1;
+        clipper::Coord_orth N3_1;
+        clipper::Coord_orth N4_1;
+        clipper::Coord_orth N6_1;
+        clipper::Coord_orth N7_1;
+        clipper::Coord_orth N9_1;
+        clipper::Coord_orth O2_1;
+        clipper::Coord_orth O6_1;
+//    Base 1  END
+
+    };
+
+    class ChainFull {
+    public:
+        //! Null constructor
+        ChainFull() {}
+        //! Add a pdb file to this DBchain (NOTE: CHAINS ARE SHIFTED TO ORIGIN)
+        bool add_pdb( const clipper::String& file, bool strict = false );
+        //! Add a monomer to this DBchain
+        void add_monomer( const NucleicAcidFull& r ) { dbmonomers.push_back( r ); }
+        //! Export DB to binary file
+        bool merge( const ChainFull& other, const std::vector<double>& wgt );
+        //! extract fragment of given length
+        ChainFull extract( int offset, int len ) const;
+        //! check if fragment is continuous
+        bool is_continuous() const;
+        //! Transform by rotation-translation operator
+        void transform( const clipper::RTop_orth& rtop );
+        /*
+        //! get RTop to fit DB fragment to given fragment
+        void lsq_superpose( const Chain& frag );
+        //! get RTop to fit DB fragment to given fragment with weights
+        void lsq_superpose( const Chain& frag, const std::vector<double>& wgts );
+        //! Get rmsd versus other fragment
+        double rmsd( const Chain& other ) const;
+        //! Get rmsd versus other fragment
+        double rmsd( const Chain& other, const std::vector<double>& wgts ) const;
+        */
+
+        //! Get monomer by position in list
+        const NucleicAcidFull& operator[] ( const int& i ) const { return dbmonomers[i]; }
+        //! Set monomer by position in list
+        NucleicAcidFull& operator[] ( const int& i ) { return dbmonomers[i]; }
+        //! Get number of monomers in list
+        int size() const { return dbmonomers.size(); }
+        // output some debug info
+        void debug() const;
+
+        void dump_chain_to_pdb(std::string file_path);
+
+        clipper::MPolymer extract_polymer(int id);
+
+        clipper::RTop_orth alignment;
+
+        float chain_score;
+
+    protected:
+        std::vector<NucleicAcidFull> dbmonomers;
+    };
 
 /*!
   Class for storing compact nucleic acid main chain information for use

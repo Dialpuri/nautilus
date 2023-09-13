@@ -8,6 +8,368 @@
 
 namespace NucleicAcidDB {
 
+    NucleicAcidFull::NucleicAcidFull(const clipper::MMonomer &monomer_1) {
+        P =    clipper::Coord_orth(clipper::Vec3<>::null());
+        OP1 =  clipper::Coord_orth(clipper::Vec3<>::null());
+        OP2 =  clipper::Coord_orth(clipper::Vec3<>::null());
+        O5p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C5p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C4p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        O4p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C3p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        O3p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C2p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C1p1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C2_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C4_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C5_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C6_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        C8_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N1_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N2_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N3_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N4_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N6_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N7_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        N9_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        O2_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+        O6_1 = clipper::Coord_orth(clipper::Vec3<>::null());
+
+        int ip = monomer_1.lookup(" P  ", clipper::MM::ANY);
+        int io5p1 = monomer_1.lookup(" O5'", clipper::MM::ANY);
+        int ic5p1 = monomer_1.lookup(" C5'", clipper::MM::ANY);
+        int ic4p1 = monomer_1.lookup(" C4'", clipper::MM::ANY);
+        int io4p1 = monomer_1.lookup(" O4'", clipper::MM::ANY);
+        int ic3p1 = monomer_1.lookup(" C3'", clipper::MM::ANY);
+        int io3p1 = monomer_1.lookup(" O3'", clipper::MM::ANY);
+        int ic2p1 = monomer_1.lookup(" C2'", clipper::MM::ANY);
+        int ic1p1 = monomer_1.lookup(" C1'", clipper::MM::ANY);
+        int in9_1 = monomer_1.lookup(" N9 ", clipper::MM::ANY);
+        int in7_1 = monomer_1.lookup(" N7 ", clipper::MM::ANY);
+        int in6_1 = monomer_1.lookup(" N6 ", clipper::MM::ANY);
+        int in4_1 = monomer_1.lookup(" N4 ", clipper::MM::ANY);
+        int in3_1 = monomer_1.lookup(" N3 ", clipper::MM::ANY);
+        int in2_1 = monomer_1.lookup(" N2 ", clipper::MM::ANY);
+        int in1_1 = monomer_1.lookup(" N1 ", clipper::MM::ANY);
+        int ic8_1 = monomer_1.lookup(" C8 ", clipper::MM::ANY);
+        int ic6_1 = monomer_1.lookup(" C6 ", clipper::MM::ANY);
+        int ic5_1 = monomer_1.lookup(" C5 ", clipper::MM::ANY);
+        int ic4_1 = monomer_1.lookup(" C4 ", clipper::MM::ANY);
+        int ic2_1 = monomer_1.lookup(" C2 ", clipper::MM::ANY);
+        int io2_1 = monomer_1.lookup(" O2 ", clipper::MM::ANY);
+        int io6_1 = monomer_1.lookup(" O6 ", clipper::MM::ANY);
+
+//        std::cout << ic8_1 << " " << in9_1 << std::endl;
+
+        if (ip >= 0) { P = monomer_1[ip].coord_orth(); }
+        if (io5p1 >= 0) { O5p1 = monomer_1[io5p1].coord_orth(); }
+        if (ic5p1 >= 0) { C5p1 = monomer_1[ic5p1].coord_orth(); }
+        if (ic4p1 >= 0) { C4p1 = monomer_1[ic4p1].coord_orth(); }
+        if (io4p1 >= 0) { O4p1 = monomer_1[io4p1].coord_orth(); }
+        if (io3p1 >= 0) { O3p1 = monomer_1[io3p1].coord_orth(); }
+        if (ic3p1 >= 0) { C3p1 = monomer_1[ic3p1].coord_orth(); }
+        if (ic2p1 >= 0) { C2p1 = monomer_1[ic2p1].coord_orth(); }
+        if (ic1p1 >= 0) { C1p1 = monomer_1[ic1p1].coord_orth(); }
+        if (in1_1 >= 0) { N1_1 = monomer_1[in1_1].coord_orth(); }
+        if (in2_1 >= 0) { N2_1 = monomer_1[in2_1].coord_orth(); }
+        if (in3_1 >= 0) { N3_1 = monomer_1[in3_1].coord_orth(); }
+        if (in4_1 >= 0) { N4_1 = monomer_1[in4_1].coord_orth(); }
+        if (in6_1 >= 0) { N6_1 = monomer_1[in6_1].coord_orth(); }
+        if (in7_1 >= 0) { N7_1 = monomer_1[in7_1].coord_orth(); }
+        if (in9_1 >= 0) { N9_1 = monomer_1[in9_1].coord_orth(); }
+        if (ic2_1 >= 0) { C2_1 = monomer_1[ic2_1].coord_orth(); }
+        if (ic4_1 >= 0) { C4_1 = monomer_1[ic4_1].coord_orth(); }
+        if (ic5_1 >= 0) { C5_1 = monomer_1[ic5_1].coord_orth(); }
+        if (ic6_1 >= 0) { C6_1 = monomer_1[ic6_1].coord_orth(); }
+        if (ic8_1 >= 0) { C8_1 = monomer_1[ic8_1].coord_orth(); }
+        if (io2_1 >= 0) { O2_1 = monomer_1[io2_1].coord_orth(); }
+        if (io6_1 >= 0) { O6_1 = monomer_1[io6_1].coord_orth(); }
+
+        base_type = monomer_1.type();
+
+    }
+
+    clipper::MMonomer NucleicAcidFull::get_mmonomer(int id) {
+
+        clipper::MMonomer monomer;
+        monomer.set_type("A");
+        monomer.set_id(id);
+
+        if (!P.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(P, "P", "P");
+            monomer.insert(atom);
+        }
+
+        if (!C1p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C1p1, "C1'", "C");
+            monomer.insert(atom);
+        }
+        if (!C2p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C2p1, "C2'", "C");
+            monomer.insert(atom);
+        }
+        if (!O3p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(O3p1, "O3'", "O");
+            monomer.insert(atom);
+        }
+        if (!C3p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C3p1, "C3'", "C");
+            monomer.insert(atom);
+        }
+        if (!O4p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(O4p1, "O4'", "O");
+            monomer.insert(atom);
+        }
+        if (!C4p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C4p1, "C4'", "C");
+            monomer.insert(atom);
+        }
+        if (!C5p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C5p1, "C5'", "C");
+            monomer.insert(atom);
+        }
+        if (!O5p1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(O5p1, "O5'", "O");
+            monomer.insert(atom);
+        }
+
+        if (!C2_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C2_1, "C2", "C");
+            monomer.insert(atom);
+        }
+        if (!C4_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C4_1, "C4", "C");
+            monomer.insert(atom);
+        }
+        if (!C5_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C5_1, "C5", "C");
+            monomer.insert(atom);
+        }
+        if (!C6_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C6_1, "C6", "C");
+            monomer.insert(atom);
+        }
+        if (!C8_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(C8_1, "C8", "C");
+            monomer.insert(atom);
+        }
+        if (!N1_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N1_1, "N1", "N");
+            monomer.insert(atom);
+        }
+        if (!N2_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N2_1, "N2", "N");
+            monomer.insert(atom);
+        }
+        if (!N3_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N3_1, "N3", "N");
+            monomer.insert(atom);
+        }
+        if (!N4_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N4_1, "N4", "N");
+            monomer.insert(atom);
+        }
+        if (!N6_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N6_1, "N6", "N");
+            monomer.insert(atom);
+        }
+        if (!N7_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N7_1, "N7", "N");
+            monomer.insert(atom);
+        }
+        if (!N9_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(N9_1, "N9", "N");
+            monomer.insert(atom);
+        }
+        if (!O2_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(O2_1, "O2", "O");
+            monomer.insert(atom);
+        }
+        if (!O6_1.is_null()) {
+            clipper::MAtom atom = NautilusUtil::create_atom(O6_1, "O6", "O");
+            monomer.insert(atom);
+        }
+
+
+
+        return monomer;
+
+    }
+
+    void NucleicAcidFull::debug() {
+        std::cout
+                << "P" << P.format() << "\n"
+                << "OP1." << OP1.format() << "\n"
+                << "OP2." << OP2.format() << "\n"
+                << "O5p1" << O5p1.format() << "\n"
+                << "C5p1" << C5p1.format() << "\n"
+                << "C4p1" << C4p1.format() << "\n"
+                << "O4p1" << O4p1.format() << "\n"
+                << "C3p1" << C3p1.format() << "\n"
+                << "O3p1" << O3p1.format() << "\n"
+                << "C2p1" << C2p1.format() << "\n"
+                << "C1p1" << C1p1.format() << "\n"
+                << "C2_1" << C2_1.format() << "\n"
+                << "C4_1" << C4_1.format() << "\n"
+                << "C5_1" << C5_1.format() << "\n"
+                << "C6_1" << C6_1.format() << "\n"
+                << "C8_1" << C8_1.format() << "\n"
+                << "N1_1" << N1_1.format() << "\n"
+                << "N2_1" << N2_1.format() << "\n"
+                << "N3_1" << N3_1.format() << "\n"
+                << "N4_1" << N4_1.format() << "\n"
+                << "N6_1" << N6_1.format() << "\n"
+                << "N7_1" << N7_1.format() << "\n"
+                << "N9_1" << N9_1.format() << "\n"
+                << "O2_1" << O2_1.format() << "\n"
+                << "O6_1" << O6_1.format() << "\n" ;
+    }
+
+
+    bool ChainFull::add_pdb(const clipper::String &file, bool strict) {
+        const int mmdbflags =
+                ::mmdb::MMDBF_IgnoreBlankLines | ::mmdb::MMDBF_IgnoreDuplSeqNum | ::mmdb::MMDBF_IgnoreNonCoorPDBErrors |
+                ::mmdb::MMDBF_IgnoreRemarks | ::mmdb::MMDBF_AllowDuplChainID | ::mmdb::MMDBF_IgnoreSegID;
+        clipper::MMDBfile mfile;
+        clipper::MiniMol mol;
+        mfile.SetFlag(mmdbflags);
+        mfile.read_file(file);
+        mfile.import_minimol(mol);
+        if (mol.size() == 0) {
+            return false;
+        }
+
+//        std::cout << mol.size() << std::endl;
+
+        for (int c = 0; c < mol.size(); c++) {
+            clipper::MPolymer mp;
+            // select monomers by occupancy
+//            std::cout << "mol[c].size() = " << mol[c].size() << std::endl;
+            for (int r = 0; r < mol[c].size(); r++) {
+                if (
+                        mol[c][r].lookup(" C1'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" C2'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" C3'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" C4'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" C5'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" O3'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" O4'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" O5'", clipper::MM::ANY) >= 0 &&
+                        mol[c][r].lookup(" P  ", clipper::MM::ANY) >= 0) {
+
+                    int a = mol[c][r].lookup(" P  ", clipper::MM::ANY);
+                    if (mol[c][r][a].occupancy() > 0.01 && mol[c][r][a].u_iso() < clipper::Util::b2u(100.0)) {
+                        mp.insert(mol[c][r]);
+                    }
+                }
+            }
+
+
+
+//            for (int r = 0; r < mp.size(); r++) {
+//                int a = mp[r].lookup(" P  ", clipper::MM::UNIQUE);
+//                clipper::RTop_orth rt(clipper::Mat33<>::identity(), -mp[r][a].coord_orth());
+//                mp[r].transform(rt);
+//            }
+//
+//            clipper::MPolymer out_mp;
+//            out_mp.insert(mp[0]);
+//
+//            clipper::MModel model;
+//            model.insert(out_mp);
+//            clipper::MiniMol mol;
+//            mol.model() = model;
+//
+//              clipper::MMDBfile mfile;
+//              mfile.export_minimol( mol );
+//              mfile.write_file( "debug/pdb/database.pdb" );
+
+            // now add the chain to the db
+//            std::cout << mp.size() << std::endl;
+            for (int r = 0; r < mp.size(); r++) {
+                NucleicAcidFull rp(mp[r]);
+//                std::cout << r << "/" << mp.size() << mp[r].type() << "\t" << rp.base_type <<  std::endl;
+//                if (rp.flag() == NucleicAcid::COMPLETE && rp.type() != ' ') {
+//          std::cout << "Adding monomer to db " << std::endl;
+                add_monomer(rp);
+//                } else {
+//                    std::cout << "MONOMER INCOMPLETE" << std::endl;
+//                }
+            }
+//            std::cout << "299" << std::endl;
+        }
+
+        return true;
+    }
+
+    ChainFull ChainFull::extract(int offset, int len) const {
+        ChainFull dbc;
+        for (int i = 0; i < len; i++) dbc.add_monomer(dbmonomers[offset + i]);
+        return dbc;
+    }
+
+    bool ChainFull::is_continuous() const {
+        // go through and find elements where there is a chain break
+        const double dmin = 2.0;
+        std::vector<bool> cterm(dbmonomers.size(), false);
+        for (int i = 0; i < dbmonomers.size() - 1; i++) {
+            int j = i + 1;
+            const clipper::Coord_orth co1 = dbmonomers[i].O3p1;
+            const clipper::Coord_orth co2 = dbmonomers[j].P;
+            if (co1.is_null() || co2.is_null()) return false;
+            const double d2 = (co1 - co2).lengthsq();
+            if (d2 > dmin * dmin) return false;
+        }
+        return true;
+    }
+
+    void NucleicAcidFull::transform(const clipper::RTop_orth &rtop) {
+        if (!P.is_null()) P = rtop * P;
+        if (!OP1.is_null()) OP1 = rtop * OP1;
+        if (!OP2.is_null()) OP2 = rtop * OP2;
+        if (!O5p1.is_null()) O5p1 = rtop * O5p1;
+        if (!C5p1.is_null()) C5p1 = rtop * C5p1;
+        if (!C4p1.is_null()) C4p1 = rtop * C4p1;
+        if (!O4p1.is_null()) O4p1 = rtop * O4p1;
+        if (!C3p1.is_null()) C3p1 = rtop * C3p1;
+        if (!O3p1.is_null()) O3p1 = rtop * O3p1;
+        if (!C2p1.is_null()) C2p1 = rtop * C2p1;
+        if (!C1p1.is_null()) C1p1 = rtop * C1p1;
+        if (!C2_1.is_null()) C2_1 = rtop * C2_1;
+        if (!C4_1.is_null()) C4_1 = rtop * C4_1;
+        if (!C5_1.is_null()) C5_1 = rtop * C5_1;
+        if (!C6_1.is_null()) C6_1 = rtop * C6_1;
+        if (!C8_1.is_null()) C8_1 = rtop * C8_1;
+        if (!N1_1.is_null()) N1_1 = rtop * N1_1;
+        if (!N2_1.is_null()) N2_1 = rtop * N2_1;
+        if (!N3_1.is_null()) N3_1 = rtop * N3_1;
+        if (!N4_1.is_null()) N4_1 = rtop * N4_1;
+        if (!N6_1.is_null()) N6_1 = rtop * N6_1;
+        if (!N7_1.is_null()) N7_1 = rtop * N7_1;
+        if (!N9_1.is_null()) N9_1 = rtop * N9_1;
+        if (!O2_1.is_null()) O2_1 = rtop * O2_1;
+        if (!O6_1.is_null()) O6_1 = rtop * O6_1;
+    }
+
+
+
+    clipper::Atom_list NucleicAcidFull::return_atom_list() {
+
+        std::vector<clipper::Atom> atoms;
+        clipper::MMonomer monomer = this->get_mmonomer();
+        atoms.reserve(monomer.size());
+        for (int a = 0; a < monomer.size(); a++) {
+            atoms.emplace_back(monomer[a]);
+        }
+
+        return {atoms};
+    }
+
+
+    void ChainFull::transform(const clipper::RTop_orth &rtop) {
+        for (int r = 0; r < dbmonomers.size(); r++)
+            dbmonomers[r].transform(rtop);
+    }
 
 NucleicAcid::NucleicAcid( const clipper::Coord_orth& cp, const clipper::Coord_orth& co5, const clipper::Coord_orth& cc5, const clipper::Coord_orth& cc4, const clipper::Coord_orth& co4, const clipper::Coord_orth& cc3, const clipper::Coord_orth& co3, const clipper::Coord_orth& cc2, const clipper::Coord_orth& cc1, const clipper::Coord_orth& cn, const clipper::String& type )
 {
