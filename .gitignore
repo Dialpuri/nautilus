@@ -5,3 +5,39 @@ cnautilus
 #IDE
 .idea/*
 .vscode/*
+
+# Dependencies
+checkout/*
+ccp4/*
+ccp4srs/*
+fftw/*
+rfftw/*
+mmdb2/*
+clipper/*
+!ccp4/CMakeLists.txt
+!ccp4srs/CMakeLists.txt
+!fftw/CMakeLists.txt
+!rfftw/CMakeLists.txt
+!mmdb2/CMakeLists.txt
+py*
+!get_sources
+dependencies/*
+*.a
+
+# !clipper/ccp4/CMakeLists.txt
+# !clipper/core/CMakeLists.txt
+# !clipper/contrib/CMakeLists.txt
+# !clipper/cif/CMakeLists.txt
+# !clipper/minimol/CMakeLists.txt
+# !clipper/mmdb/CMakeLists.txt
+# !clipper/phs/CMakeLists.txt
+!**/*/CMakeLists.txt
+
+CMakeFiles
+include
+data
+
+.DS_Store
+*.cmake
+tests
+webserver/public/baby-gru
