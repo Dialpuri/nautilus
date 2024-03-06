@@ -103,7 +103,7 @@ clipper::MiniMol PredictionBuilder::generate_phos_minimol(float threshold_value)
 
 
 clipper::MiniMol PredictionBuilder::generate_phosphate_positions() {
-    clipper::MiniMol mol = generate_phos_minimol(0.5);
+    clipper::MiniMol mol = generate_phos_minimol(0.1);
 
     clipper::MiniMol peaks = find_peaks(mol, m_prediction.phosphate_map);
 
@@ -294,6 +294,8 @@ clipper::MiniMol PredictionBuilder::find_peaks(clipper::MiniMol &mol, clipper::X
         peak_mol.insert(peak_mp);
         return peak_mol;
     }
+
+    return {};
 }
 
 
@@ -321,10 +323,147 @@ void MLFind::load_library_from_file(const std::string &path) {
     std::cout << "Loaded library from file " << path << std::endl;
 }
 
+// clipper::MiniMol MLFind::find_with_fingerprints() {
+//     clipper::MiniMol mol_new = mol;
+//
+//   // make a list of rotations
+//   std::vector<clipper::RTop_orth> rots;
+//   // make a list of rotation ops to try
+//   float glim = 360.0;  // gamma
+//   float blim = 180.0;  // beta
+//   float alim = 360.0;  // alpha
+//   // do a uniformly sampled search of orientation space
+//   float anglim = clipper::Util::min( alim, glim );
+//   for ( float bdeg=step/2; bdeg < 180.0; bdeg += step ) {
+//     float beta = clipper::Util::d2rad(bdeg);
+//     float spl = anglim/clipper::Util::intf(cos(0.5*beta)*anglim/step+1);
+//     float smi = anglim/clipper::Util::intf(sin(0.5*beta)*anglim/step+1);
+//     for ( float thpl=spl/2; thpl < 720.0; thpl += spl )
+//       for ( float thmi=smi/2; thmi < 360.0; thmi += smi ) {
+//         float adeg = clipper::Util::mod(0.5*(thpl+thmi),360.0);
+//         float gdeg = clipper::Util::mod(0.5*(thpl-thmi),360.0);
+//         if ( adeg <= alim && bdeg <= blim && gdeg <= glim ) {
+//           float alpha = clipper::Util::d2rad(adeg);
+//           float gamma = clipper::Util::d2rad(gdeg);
+//           clipper::Euler_ccp4 euler( alpha, beta, gamma );
+//           rots.push_back(clipper::RTop_orth(clipper::Rotation(euler).matrix()));
+//         }
+//       }
+//   }
+//
+//   // get cutoff (for optimisation)
+//   clipper::Map_stats stats( xmap );
+//   double sigcut = stats.mean() + 1.0*stats.std_dev();
+//
+//   // feature search
+//   if ( found_s.size() == 0 || found_p.size() == 0 ) {
+//     SSfind ssfind;
+//     ssfind.prep_xmap( xmap, std::max( target_sugar().radius(),
+//                                     target_phosphate().radius() ) + 1.0 );
+//     ssfind.prep_search( xmap );
+//     found_s = ssfind.search( target_sugar().target(), rots, sigcut, 0.0 );
+//     found_p = ssfind.search( target_phosphate().target(), rots, sigcut, 0.0 );
+//
+//     std::sort( found_s.begin(), found_s.end() );
+//     std::reverse( found_s.begin(), found_s.end() );
+//     std::sort( found_p.begin(), found_p.end() );
+//     std::reverse( found_p.begin(), found_p.end() );
+//     //std::cout << found_s.size() << "\t" << found_p.size() << std::endl;
+//     //for ( int i = 0; i < clipper::Util::min( int(found_p.size()), 100 ); i++ )
+//     //  std::cout << i << ":\tSgr: " << found_s[i].score << "\t" << found_s[i].rot << " " << found_s[i].trn << "\tPho: " << found_p[i].score << "\t" << found_p[i].rot << " " << found_p[i].trn << std::endl;
+//   }
+//
+//   const clipper::Grid_sampling& grid = xmap.grid_sampling();
+//   clipper::MAtomNonBond nb( mol_new, 4.0 );
+//
+//   // filter lists on translation
+//   std::vector<SearchResult> filter_s, filter_p;
+//   for ( int i = 0; i < found_s.size(); i++ ) {
+//     int it = found_s[i].trn;
+//     clipper::Coord_orth trn( xmap.coord_orth( grid.deindex(it).coord_map() ) );
+//     std::vector<clipper::MAtomIndexSymmetry> atoms = nb( trn, 4.0 );
+//     if ( atoms.size() == 0 ) filter_s.push_back( found_s[i] );
+//   }
+//   for ( int i = 0; i < found_p.size(); i++ ) {
+//     int it = found_p[i].trn;
+//     clipper::Coord_orth trn( xmap.coord_orth( grid.deindex(it).coord_map() ) );
+//     std::vector<clipper::MAtomIndexSymmetry> atoms = nb( trn, 4.0 );
+//     if ( atoms.size() == 0 ) filter_p.push_back( found_p[i] );
+//   }
+//   //std::cout << "Filter: " << mol.atom_list().size() << std::endl;
+//   //std::cout << found_s.size() << " " << filter_s.size() << std::endl;
+//   //std::cout << found_p.size() << " " << filter_p.size() << std::endl;
+//   //std::cout << mol_new.size() << std::endl;
+//
+//   // build mono-units on sugars from db fragments
+//   for ( int i = 0; i < std::min(int(filter_s.size()),nsugar); i++ ) {
+//     std::vector<clipper::Coord_orth> v1(3), v2(3);
+//     int ir = filter_s[i].rot;
+//     int it = filter_s[i].trn;
+//     clipper::Coord_orth trn( xmap.coord_orth( grid.deindex(it).coord_map() ) );
+//     clipper::RTop_orth rtop( rots[ir].rot(), trn );
+//     NucleicAcidDB::NucleicAcid na = narepr;
+//     v1[0] = rtop * target_s.standard()[0]; // C3'
+//     v1[1] = rtop * target_s.standard()[1]; // C1'
+//     v1[2] = rtop * target_s.standard()[2]; // C4'
+//     v2[0] = na.coord_c3();
+//     v2[1] = na.coord_c1();
+//     v2[2] = na.coord_c4();
+//     clipper::RTop_orth rtdb( v2, v1 );
+//     na.transform( rtdb );
+//     clipper::MPolymer mp;
+//     na.set_type( '?' );
+//     mp.insert( na.mmonomer() );
+//     mol_new.insert( mp );
+//   }
+//   //std::cout << mol_new.size() << std::endl;
+//
+//   // build bi-units on phosphates from db fragments
+//   for ( int i = 0; i < std::min(int(filter_p.size()),nphosp); i++ ) {
+//     std::vector<clipper::Coord_orth> v1(3), v2(3);
+//     int ir = filter_p[i].rot;
+//     int it = filter_p[i].trn;
+//     clipper::Coord_orth trn( xmap.coord_orth( grid.deindex(it).coord_map() ) );
+//     clipper::RTop_orth rtop( rots[ir].rot(), trn );
+//     v1[0] = rtop * target_p.standard()[0]; // O3'
+//     v1[1] = rtop * target_p.standard()[1]; // P
+//     v1[2] = rtop * target_p.standard()[2]; // O5'
+//     float smax = -1.0e20;
+//     clipper::MPolymer mpmax;
+//     for ( int j = 0; j < nadb.size()-1; j++ ) {
+//       NucleicAcidDB::Chain frag = nadb.extract( j, 2 );
+//       if ( frag.is_continuous() ) {
+//         v2[0] = frag[0].coord_o3();
+//         v2[1] = frag[1].coord_p();
+//         v2[2] = frag[1].coord_o5();
+//         clipper::RTop_orth rtdb( v2, v1 );
+//         frag.transform( rtdb );
+//         float score = ( score_sugar( xmap, frag[0] ) +
+//                         score_sugar( xmap, frag[1] ) );
+//         if ( score > smax ) {
+//           clipper::MPolymer mpx;
+//           frag[0].set_type( '?' );
+//           frag[1].set_type( '?' );
+//           mpx.insert( frag[0].mmonomer() );
+//           mpx.insert( frag[1].mmonomer() );
+//           smax = score;
+//           mpmax = mpx;
+//         }
+//       }
+//     }
+//     mol_new.insert( mpmax );
+//   }
+//   //std::cout << mol_new.size() << std::endl;
+//
+//   return mol_new;
+// }
+
 clipper::MiniMol MLFind::find() {
 
     std::cout << "Beginning ML Find" << std::endl;
     clipper::MiniMol phosphate_positions = generate_phosphate_positions();
+
+    NautilusUtil::save_minimol(phosphate_positions, "phosphate_positions.pdb");
 
     TripletCoordinates triplet_coordinates = find_phosphate_triplets(phosphate_positions);
 
@@ -383,13 +522,12 @@ clipper::MiniMol MLFind::find() {
     }
     output_mol.insert(mp);
 
-
-
     clipper::MiniMol filtered_chain = filter_and_form_chain(placed_fragments);
     clipper::MiniMol base_removed_mol = remove_bases(filtered_chain);
 
     clipper::MiniMol mol = organise_to_chains(base_removed_mol);
 
+    NautilusUtil::save_minimol(mol, "mlfind.pdb");
     return mol;
 }
 
@@ -437,7 +575,6 @@ MLFind::TripletCoordinates MLFind::find_phosphate_triplets(clipper::MiniMol &mol
                 float second_third_distance = (third_atom_orth - m_atom_orth).lengthsq();
 
                 if (first_second_distance < 1 || second_third_distance < 1) continue;
-
 
                 clipper::Vec3<> p1_v = first_atom_orth;
                 clipper::Vec3<> p2_v = m_atom_orth;
